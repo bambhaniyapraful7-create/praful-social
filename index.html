@@ -22,6 +22,23 @@ main{min-width:0}.stories,.composer,.post,.sidecard{background:var(--panel);bord
 .modal{position:fixed;inset:0;background:#0009;display:none;place-items:center;padding:18px;z-index:10}.modal.show{display:grid}.dialog{width:min(460px,100%);background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:20px}.dialog input,.dialog textarea{width:100%;margin:7px 0 12px;padding:11px;border-radius:10px;border:1px solid var(--line);background:#0e1528;color:white}.dialog textarea{min-height:90px;resize:vertical}.dialog-actions{display:flex;justify-content:flex-end;gap:8px}
 .toast{position:fixed;bottom:75px;left:50%;transform:translateX(-50%);background:#293654;padding:10px 16px;border-radius:12px;display:none;z-index:20}
 @media(max-width:760px){.wrap{display:block;margin:14px auto 85px}.side{display:none}.bottom{display:flex}.postvisual{height:290px}.top{padding:12px 15px}.actions .pill{display:none}}
+
+.reels-section{margin-top:18px;background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:15px}
+.reels-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.reels-head h2{margin:0;font-size:20px}
+.reels-controls{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:12px}
+.reels-controls select,.reels-controls button{background:#202b45;color:white;border:1px solid var(--line);border-radius:10px;padding:9px 11px}
+.reels-controls button{background:linear-gradient(100deg,var(--pink),var(--purple));font-weight:700}
+.reels-status{color:var(--muted);font-size:13px;margin:10px 0}
+.reels-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px}
+.reel-card{min-width:0;background:#0e1528;border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.reel-player{aspect-ratio:9/16;background:#05070d}
+.reel-player iframe{width:100%;height:100%;border:0}
+.reel-info{padding:10px}
+.reel-title{font-weight:700;font-size:14px;line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.reel-channel{color:var(--muted);font-size:12px;margin-top:6px}
+@media(max-width:480px){.reels-grid{grid-template-columns:1fr 1fr;gap:9px}.reels-section{padding:11px}.reel-info{padding:8px}.reel-title{font-size:12px}}
+
 </style>
 </head>
 <body>
@@ -32,6 +49,33 @@ main{min-width:0}.stories,.composer,.post,.sidecard{background:var(--panel);bord
 <div class="story"><div class="avatar"><span>😎</span></div>Rahul</div><div class="story"><div class="avatar"><span>🌸</span></div>Diya</div><div class="story"><div class="avatar"><span>🎧</span></div>Music</div><div class="story"><div class="avatar"><span>🏏</span></div>Cricket</div><div class="story"><div class="avatar"><span>🚀</span></div>Travel</div>
 </section>
 <section class="composer"><div class="compose-row"><div class="mini">P</div><input id="quickCaption" placeholder="What's on your mind?"><button class="primary" onclick="openModal()">Post</button></div></section>
+
+<section class="reels-section" id="reels">
+  <div class="reels-head">
+    <h2>▶ PRAFUL AUTO REELS</h2>
+    <span class="tag">YouTube videos</span>
+  </div>
+  <div class="reels-controls">
+    <select id="reelCategory" aria-label="Choose reels category">
+      <option value="trending">Trending</option>
+      <option value="comedy">Comedy</option>
+      <option value="funny">Funny</option>
+      <option value="music">Music</option>
+      <option value="dance">Dance</option>
+      <option value="gaming">Gaming</option>
+      <option value="sports">Sports</option>
+      <option value="movies">Movies</option>
+      <option value="travel">Travel</option>
+      <option value="technology">Technology</option>
+      <option value="Hindi">Hindi</option>
+      <option value="Gujarati">Gujarati</option>
+    </select>
+    <button type="button" id="loadReels">Load Reels</button>
+  </div>
+  <p class="reels-status" id="reelsStatus" role="status">Loading trending reels…</p>
+  <div class="reels-grid" id="reelsGrid"></div>
+</section>
+
 <div id="feed">
 <article class="post"><div class="posthead"><div class="mini">P</div><div><div class="username">praful_creator</div><div class="sub">Suggested post · Just now</div></div></div><div class="postvisual">🌅</div><div class="postbuttons"><button class="iconbtn" onclick="like(this)">♡</button><button class="iconbtn" onclick="showToast('Comments are ready for the next version')">▢</button><button class="iconbtn" onclick="showToast('Share feature coming soon')">➤</button></div><div class="postbody"><b class="likes">12 likes</b><p class="caption"><b>praful_creator</b> Welcome to PRAFUL SOCIAL! Share your moments with everyone. ✨</p><div class="sub">Be the first to comment</div><div class="commentbox"><input placeholder="Add a comment..." onkeydown="if(event.key==='Enter'){showToast('Comment saved in this demo');this.value=''}"><button class="pill" onclick="showToast('Comment feature coming soon')">Send</button></div></div></article>
 </div>
@@ -39,6 +83,55 @@ main{min-width:0}.stories,.composer,.post,.sidecard{background:var(--panel);bord
 <nav class="bottom"><button class="navbtn" onclick="showToast('Home')">⌂</button><button class="navbtn" onclick="showToast('Explore coming soon')">⌕</button><button class="navbtn" onclick="openModal()">＋</button><button class="navbtn" onclick="showToast('Reels coming soon')">▣</button><button class="navbtn" onclick="showToast('Profile coming soon')">☺</button></nav>
 <div class="modal" id="modal" onclick="if(event.target===this)closeModal()"><div class="dialog"><h2>Create a post</h2><label for="caption">Caption</label><textarea id="caption" placeholder="Write something..."></textarea><label for="media">Choose photo or video (preview demo)</label><input id="media" type="file" accept="image/*,video/*"><div class="dialog-actions"><button class="pill" onclick="closeModal()">Cancel</button><button class="primary" onclick="publish()">Publish</button></div></div></div><div class="toast" id="toast"></div>
 <script>
+
+const REELS_API = 'https://praful-social-api.bambhaniyapraful7.workers.dev/reels';
+async function loadReels(){
+  const category = document.getElementById('reelCategory').value;
+  const status = document.getElementById('reelsStatus');
+  const grid = document.getElementById('reelsGrid');
+  status.textContent = 'Loading ' + category + ' reels…';
+  grid.replaceChildren();
+  try {
+    const response = await fetch(REELS_API + '?category=' + encodeURIComponent(category));
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.details || data.error || 'Could not load reels');
+    if (!data.videos || !data.videos.length) {
+      status.textContent = 'No videos found. Please try another category.';
+      return;
+    }
+    data.videos.forEach(video => {
+      const card = document.createElement('article');
+      card.className = 'reel-card';
+      const player = document.createElement('div');
+      player.className = 'reel-player';
+      const frame = document.createElement('iframe');
+      frame.src = 'https://www.youtube-nocookie.com/embed/' + encodeURIComponent(video.id);
+      frame.title = video.title || 'YouTube video';
+      frame.loading = 'lazy';
+      frame.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
+      frame.allowFullscreen = true;
+      player.appendChild(frame);
+      const info = document.createElement('div');
+      info.className = 'reel-info';
+      const title = document.createElement('div');
+      title.className = 'reel-title';
+      title.textContent = video.title || 'YouTube Reel';
+      const channel = document.createElement('div');
+      channel.className = 'reel-channel';
+      channel.textContent = video.channel || 'YouTube creator';
+      info.append(title, channel);
+      card.append(player, info);
+      grid.appendChild(card);
+    });
+    status.textContent = 'Showing ' + data.videos.length + ' videos in ' + category + '.';
+  } catch (error) {
+    status.textContent = 'Reels load nahi hue: ' + error.message;
+  }
+}
+document.getElementById('loadReels').addEventListener('click', loadReels);
+document.getElementById('reelCategory').addEventListener('change', loadReels);
+window.addEventListener('load', loadReels);
+
 function showToast(s){let t=document.getElementById('toast');t.textContent=s;t.style.display='block';setTimeout(()=>t.style.display='none',2300)}
 function openModal(){document.getElementById('modal').classList.add('show');document.getElementById('caption').focus()}
 function closeModal(){document.getElementById('modal').classList.remove('show')}
