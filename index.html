@@ -39,10 +39,15 @@ main{min-width:0}.stories,.composer,.post,.sidecard{background:var(--panel);bord
 .reel-title{font-weight:700;font-size:14px;line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .reel-channel{color:var(--muted);font-size:12px;margin-top:6px}
 @media(max-width:480px){.reels-grid{grid-template-columns:1fr 1fr;gap:9px}.reels-section{padding:11px}.reel-info{padding:8px}.reel-title{font-size:12px}}
+
+.profile-avatar{width:92px;height:92px;border-radius:50%;object-fit:cover;background:#27324c;border:3px solid #8b5cf6;margin:4px auto 14px;display:block}
+.profile-preview{text-align:center;margin:10px 0 16px}
+.profile-preview strong{display:block;font-size:18px}
+.profile-preview small{color:var(--muted)}
 </style>
 </head>
 <body>
-<header class="top"><div class="brand">PRAFUL SOCIAL</div><div class="actions"><span class="auth-user" id="authUserLabel">Not signed in</span><button class="pill" onclick="showToast('Search is coming in the next version')">⌕ Search</button><button class="pill" id="signOutBtn" style="display:none" onclick="signOutUser()">Sign out</button><button class="primary" id="authOpenBtn" onclick="openAuthModal()">Login / Signup</button><button class="primary" onclick="openModal()">＋ Create</button></div></header>
+<header class="top"><div class="brand">PRAFUL SOCIAL</div><div class="actions"><span class="auth-user" id="authUserLabel">Not signed in</span><button class="pill" onclick="showToast('Search is coming in the next version')">⌕ Search</button><button class="pill" id="signOutBtn" style="display:none" onclick="signOutUser()">Sign out</button><button class="primary" id="authOpenBtn" onclick="openAuthModal()">Login / Signup</button><button class="pill" onclick="openProfile()">☺ Profile</button><button class="primary" onclick="openModal()">＋ Create</button></div></header>
 <div class="wrap"><main>
 <section class="stories" aria-label="Stories">
 <div class="story"><div class="avatar"><span>＋</span></div>Your story</div>
@@ -63,7 +68,7 @@ main{min-width:0}.stories,.composer,.post,.sidecard{background:var(--panel);bord
 <article class="post"><div class="posthead"><div class="mini">P</div><div><div class="username">praful_creator</div><div class="sub">Suggested post · Just now</div></div></div><div class="postvisual">🌅</div><div class="postbuttons"><button class="iconbtn" onclick="like(this)">♡</button><button class="iconbtn" onclick="showToast('Comments are ready for the next version')">▢</button><button class="iconbtn" onclick="showToast('Share feature coming soon')">➤</button></div><div class="postbody"><b class="likes">12 likes</b><p class="caption"><b>praful_creator</b> Welcome to PRAFUL SOCIAL! Share your moments with everyone. ✨</p><div class="sub">Be the first to comment</div><div class="commentbox"><input placeholder="Add a comment..." onkeydown="if(event.key==='Enter'){showToast('Comment saved in this demo');this.value=''}"><button class="pill" onclick="showToast('Comment feature coming soon')">Send</button></div></div></article>
 </div>
 </main><aside class="side"><section class="sidecard"><h3>Welcome to PRAFUL SOCIAL 👋</h3><p>Your own social space to share photos, videos and moments.</p><span class="tag">Photos</span><span class="tag">Reels</span><span class="tag">Friends</span><hr style="border-color:var(--line);margin:17px 0"><b>Coming next</b><p>Real accounts are connected to Supabase. Posts, likes, follows and chat still need their database features added.</p></section></aside></div>
-<nav class="bottom"><button class="navbtn" onclick="showToast('Home')">⌂</button><button class="navbtn" onclick="showToast('Explore coming soon')">⌕</button><button class="navbtn" onclick="openModal()">＋</button><button class="navbtn" onclick="document.getElementById('reels').scrollIntoView({behavior:'smooth'})">▣</button><button class="navbtn" onclick="showToast('Profile coming soon')">☺</button></nav>
+<nav class="bottom"><button class="navbtn" onclick="showToast('Home')">⌂</button><button class="navbtn" onclick="showToast('Explore coming soon')">⌕</button><button class="navbtn" onclick="openModal()">＋</button><button class="navbtn" onclick="document.getElementById('reels').scrollIntoView({behavior:'smooth'})">▣</button><button class="navbtn" onclick="openProfile()">☺</button></nav>
 
 <div class="modal" id="authModal" onclick="if(event.target===this)closeAuthModal()"><div class="dialog">
 <h2 id="authTitle">Login to PRAFUL SOCIAL</h2>
@@ -73,6 +78,23 @@ main{min-width:0}.stories,.composer,.post,.sidecard{background:var(--panel);bord
 <p class="auth-note" id="authHint">Use your registered email and password.</p>
 <p class="auth-message" id="authMessage" role="status"></p>
 <div class="dialog-actions"><button class="pill" onclick="closeAuthModal()">Close</button><button class="primary" id="authSubmitBtn" onclick="submitAuth()">Login</button></div>
+</div></div>
+
+
+<div class="modal" id="profileModal" onclick="if(event.target===this)closeProfile()"><div class="dialog">
+<h2>My Profile</h2>
+<div class="profile-preview">
+<img id="profileAvatarPreview" class="profile-avatar" alt="Profile photo" src="https://placehold.co/100x100/27324c/ffffff?text=P">
+<strong id="profileDisplayPreview">Your name</strong>
+<small id="profileUsernamePreview">@username</small>
+</div>
+<label for="profileDisplayName">Display name</label><input id="profileDisplayName" maxlength="60" placeholder="Your name">
+<label for="profileUsername">Username</label><input id="profileUsername" maxlength="30" placeholder="your_username">
+<label for="profileBio">Bio</label><textarea id="profileBio" maxlength="160" placeholder="Write a short bio..."></textarea>
+<label for="profileAvatarUrl">Profile photo URL (optional)</label><input id="profileAvatarUrl" type="url" placeholder="https://example.com/photo.jpg">
+<p class="auth-note">Photo ke liye public image URL paste karein. Direct photo upload baad mein add karenge.</p>
+<p class="auth-message" id="profileMessage" role="status"></p>
+<div class="dialog-actions"><button class="pill" onclick="closeProfile()">Close</button><button class="primary" id="saveProfileBtn" onclick="saveProfile()">Save Profile</button></div>
 </div></div>
 
 <div class="modal" id="modal" onclick="if(event.target===this)closeModal()"><div class="dialog"><h2>Create a post</h2><label for="caption">Caption</label><textarea id="caption" placeholder="Write something..."></textarea><label for="media">Choose photo or video (preview demo)</label><input id="media" type="file" accept="image/*,video/*"><div class="dialog-actions"><button class="pill" onclick="closeModal()">Cancel</button><button class="primary" onclick="publish()">Publish</button></div></div></div><div class="toast" id="toast"></div>
@@ -135,6 +157,57 @@ async function initAuth(){
   supabaseClient.auth.onAuthStateChange((_event,newSession)=>updateAuthUI(newSession?.user||null));
 }
 initAuth();
+
+let currentProfileUser=null;
+function updateProfilePreview(){
+ const name=document.getElementById('profileDisplayName').value.trim()||'Your name';
+ const username=document.getElementById('profileUsername').value.trim().replace(/^@/,'')||'username';
+ const url=document.getElementById('profileAvatarUrl').value.trim();
+ document.getElementById('profileDisplayPreview').textContent=name;
+ document.getElementById('profileUsernamePreview').textContent='@'+username;
+ document.getElementById('profileAvatarPreview').src=url||'https://placehold.co/100x100/27324c/ffffff?text=P';
+}
+async function openProfile(){
+ const {data:{user}}=await supabaseClient.auth.getUser();
+ if(!user){showToast('Please login first');openAuthModal();return}
+ currentProfileUser=user;
+ const message=document.getElementById('profileMessage');
+ message.textContent='Loading profile…';
+ document.getElementById('profileModal').classList.add('show');
+ try{
+  const {data,error}=await supabaseClient.from('profiles').select('username,display_name,bio,avatar_url').eq('id',user.id).maybeSingle();
+  if(error)throw error;
+  document.getElementById('profileDisplayName').value=data?.display_name||'';
+  document.getElementById('profileUsername').value=data?.username||'';
+  document.getElementById('profileBio').value=data?.bio||'';
+  document.getElementById('profileAvatarUrl').value=data?.avatar_url||'';
+  updateProfilePreview();
+  message.textContent=data?'Your profile is ready.':'Profile record nahi mili. Please contact support.';
+ }catch(error){message.textContent='Load error: '+(error.message||'Please try again.')}
+}
+function closeProfile(){document.getElementById('profileModal').classList.remove('show')}
+async function saveProfile(){
+ const user=currentProfileUser, message=document.getElementById('profileMessage'), button=document.getElementById('saveProfileBtn');
+ if(!user){message.textContent='Please login first.';return}
+ const username=document.getElementById('profileUsername').value.trim().replace(/^@/,'').toLowerCase();
+ const display_name=document.getElementById('profileDisplayName').value.trim();
+ const bio=document.getElementById('profileBio').value.trim();
+ const avatar_url=document.getElementById('profileAvatarUrl').value.trim();
+ if(!/^[a-z0-9_.]{3,30}$/.test(username)){message.textContent='Username 3–30 characters ka ho: letters, numbers, _ ya .';return}
+ if(avatar_url&&!/^https:\/\/.+/i.test(avatar_url)){message.textContent='Photo URL https:// se shuru hona chahiye.';return}
+ button.disabled=true;button.textContent='Saving…';message.textContent='';
+ try{
+  const {error}=await supabaseClient.from('profiles').update({username,display_name,bio,avatar_url}).eq('id',user.id);
+  if(error)throw error;
+  message.textContent='Profile saved successfully!';
+  showToast('Profile updated');
+ }catch(error){message.textContent='Save error: '+(error.message||'Please try again.')}
+ finally{button.disabled=false;button.textContent='Save Profile'}
+}
+['profileDisplayName','profileUsername','profileAvatarUrl','profileBio'].forEach(id=>{
+ document.getElementById(id).addEventListener('input',updateProfilePreview);
+});
+
 
 const REELS_API = 'https://praful-social-api.bambhaniyapraful7.workers.dev/reels';
 let reelsNextPageToken = '';
