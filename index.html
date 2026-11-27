@@ -2,448 +2,135 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#111827">
-<meta name="description" content="PRAFUL SOCIAL — share moments, photos and videos with friends.">
-<link rel="manifest" href="manifest.json">
-<title>PRAFUL SOCIAL</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#101827">
+<meta name="description" content="PRAFUL YouTube Search - search and watch YouTube videos.">
+<title>PRAFUL YOUTUBE</title>
 <style>
-:root{--bg:#0b1020;--panel:#141b2d;--panel2:#1b2540;--text:#f5f7ff;--muted:#a7b0c5;--pink:#ff4d8d;--purple:#8b5cf6;--line:#27324c}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:15px/1.45 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
-button,input,textarea{font:inherit}button{cursor:pointer;border:0;color:inherit}
-.top{position:sticky;top:0;z-index:5;background:#0b1020ed;backdrop-filter:blur(14px);border-bottom:1px solid var(--line);padding:13px max(16px,calc((100vw - 1080px)/2));display:flex;align-items:center;justify-content:space-between}
-.brand{font-size:22px;font-weight:900;letter-spacing:-.8px;background:linear-gradient(90deg,#ff4d8d,#9b7bff);color:transparent;background-clip:text}
-.actions{display:flex;gap:9px;align-items:center}.pill,.navbtn,.primary{padding:9px 13px;border-radius:12px;background:var(--panel2)}.primary{background:linear-gradient(100deg,var(--pink),var(--purple));font-weight:700}
-.auth-user{font-size:12px;color:var(--muted);max-width:170px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.wrap{max-width:1080px;margin:22px auto;padding:0 15px;display:grid;grid-template-columns:minmax(0,1fr) 290px;gap:22px}
-main{min-width:0}.stories,.composer,.post,.sidecard{background:var(--panel);border:1px solid var(--line);border-radius:18px}
-.stories{display:flex;gap:14px;padding:15px;overflow:auto}.story{flex:0 0 66px;text-align:center;font-size:12px;color:var(--muted)}.avatar{width:58px;height:58px;border-radius:50%;display:grid;place-items:center;margin:0 auto 5px;background:linear-gradient(135deg,#ff4d8d,#805bff);padding:3px}.avatar span{width:100%;height:100%;border-radius:50%;display:grid;place-items:center;background:#222b43;color:white;font-size:22px}
-.composer{margin-top:17px;padding:15px}.compose-row{display:flex;gap:10px;align-items:center}.compose-row input{flex:1;min-width:0;background:#0e1528;border:1px solid var(--line);border-radius:12px;padding:12px;color:white}.post{margin-top:17px;overflow:hidden}.posthead{display:flex;align-items:center;gap:10px;padding:13px 15px}.mini{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(135deg,#ff4d8d,#805bff);font-weight:800}.username{font-weight:750}.sub{color:var(--muted);font-size:12px}.postvisual{min-height:260px;height:340px;display:grid;place-items:center;background:radial-gradient(circle at 25% 25%,#ff7aa8,transparent 35%),radial-gradient(circle at 75% 70%,#6854c9,transparent 38%),linear-gradient(135deg,#202d50,#111827);font-size:76px;overflow:hidden}.postbody{padding:0 15px 14px}.postbuttons{display:flex;gap:16px;padding:12px 15px 5px}.iconbtn{background:transparent;font-size:22px;padding:0}.caption{margin:7px 0}.commentbox{display:flex;gap:8px;margin-top:12px}.commentbox input{flex:1;min-width:0;background:#0e1528;border:1px solid var(--line);border-radius:10px;padding:9px;color:white}.sidecard{padding:17px;position:sticky;top:80px;height:max-content}.sidecard h3{margin:0 0 9px}.sidecard p{color:var(--muted);font-size:13px}.tag{display:inline-block;background:#292446;color:#d9cfff;padding:5px 9px;border-radius:99px;font-size:12px;margin:3px}
-.bottom{display:none;position:fixed;bottom:0;left:0;right:0;background:#11192b;border-top:1px solid var(--line);padding:10px 20px calc(10px + env(safe-area-inset-bottom));justify-content:space-around;z-index:6}
-.modal{position:fixed;inset:0;background:#0009;display:none;place-items:center;padding:18px;z-index:10}.modal.show{display:grid}.dialog{width:min(460px,100%);background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:20px}.dialog input,.dialog textarea{width:100%;margin:7px 0 12px;padding:11px;border-radius:10px;border:1px solid var(--line);background:#0e1528;color:white}.dialog textarea{min-height:90px;resize:vertical}.dialog-actions{display:flex;justify-content:flex-end;gap:8px;flex-wrap:wrap}.auth-tabs{display:flex;gap:8px;margin:12px 0}.auth-tabs button{flex:1}.auth-message{font-size:13px;color:var(--muted);min-height:20px;margin:8px 0}.auth-note{font-size:12px;color:var(--muted)}
-.toast{position:fixed;bottom:75px;left:50%;transform:translateX(-50%);background:#293654;padding:10px 16px;border-radius:12px;display:none;z-index:20}
-@media(max-width:760px){.wrap{display:block;margin:14px auto 85px}.side{display:none}.bottom{display:flex}.postvisual{height:290px}.top{padding:12px 15px}.actions .pill{display:none}.auth-user{display:none}}
-
-.reels-section{margin-top:18px;background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:15px}
-.reels-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
-.reels-head h2{margin:0;font-size:20px}
-.reels-controls{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:12px}
-.reels-controls select,.reels-controls button{background:#202b45;color:white;border:1px solid var(--line);border-radius:10px;padding:9px 11px}
-.reels-controls button{background:linear-gradient(100deg,var(--pink),var(--purple));font-weight:700}
-.reels-status{color:var(--muted);font-size:13px;margin:10px 0}
-.reels-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px}
-.reel-card{min-width:0;background:#0e1528;border:1px solid var(--line);border-radius:14px;overflow:hidden}
-.reel-player{aspect-ratio:9/16;background:#05070d}
-.reel-player iframe{width:100%;height:100%;border:0}
-.reel-info{padding:10px}
-.reel-title{font-weight:700;font-size:14px;line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-.reel-channel{color:var(--muted);font-size:12px;margin-top:6px}
-@media(max-width:480px){.reels-grid{grid-template-columns:1fr 1fr;gap:9px}.reels-section{padding:11px}.reel-info{padding:8px}.reel-title{font-size:12px}}
-
-.profile-avatar{width:92px;height:92px;border-radius:50%;object-fit:cover;background:#27324c;border:3px solid #8b5cf6;margin:4px auto 14px;display:block}
-.profile-preview{text-align:center;margin:10px 0 16px}
-.profile-preview strong{display:block;font-size:18px}
-.profile-preview small{color:var(--muted)}
-  
-/* PRAFUL AUTO VIDEOS */
-.videos-section{margin-top:18px;background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:15px}
-.videos-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
-.videos-head h2{margin:0;font-size:20px}
-.videos-controls{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:12px}
-.videos-controls select,.videos-controls button{background:#202b45;color:white;border:1px solid var(--line);border-radius:10px;padding:9px 11px}
-.videos-controls button{background:linear-gradient(100deg,var(--pink),var(--purple));font-weight:700}
-.videos-status{color:var(--muted);font-size:13px;margin:10px 0}
-.videos-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
-.video-card{min-width:0;background:#0e1528;border:1px solid var(--line);border-radius:14px;overflow:hidden}
-.video-player{aspect-ratio:16/9;background:#05070d}
-.video-player iframe{width:100%;height:100%;border:0}
-.video-info{padding:10px}
-.video-title{font-weight:700;font-size:14px;line-height:1.4}
-.video-channel{color:var(--muted);font-size:12px;margin-top:6px}
-.video-duration{color:#d9cfff;font-size:12px;margin-top:5px}
-@media(max-width:480px){.videos-grid{grid-template-columns:1fr}.videos-section{padding:11px}}
-
+:root{color-scheme:dark;--bg:#0b1020;--panel:#151e30;--line:#2a3650;--muted:#aab5ca;--accent:#765cff}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:#f7f8fc;font:15px/1.5 system-ui,Arial,sans-serif}
+header{position:sticky;top:0;z-index:5;background:#0b1020ee;border-bottom:1px solid var(--line);padding:15px max(16px,calc((100vw - 1100px)/2));display:flex;align-items:center;justify-content:space-between;gap:12px}
+.brand{font-weight:900;font-size:22px;letter-spacing:-.5px}.brand span{color:#9b8aff}
+main{max-width:1100px;margin:28px auto;padding:0 16px}
+h1{font-size:clamp(25px,4vw,36px);margin:0 0 5px}.intro{color:var(--muted);margin:0 0 20px}
+.search{display:flex;gap:9px;background:var(--panel);padding:12px;border:1px solid var(--line);border-radius:16px}
+.search input{flex:1;min-width:0;background:#0b1324;border:1px solid var(--line);border-radius:11px;padding:13px;color:white;font-size:16px;outline:none}
+button{border:0;border-radius:11px;padding:11px 17px;background:var(--accent);color:white;font-weight:750;cursor:pointer}
+button:disabled{opacity:.55;cursor:wait}
+.hint{color:var(--muted);font-size:13px;margin:10px 2px 20px}
+.status{color:var(--muted);min-height:24px;margin:14px 2px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:15px;overflow:hidden;min-width:0}
+.player{aspect-ratio:16/9;background:#05070d}.player iframe{width:100%;height:100%;border:0}
+.info{padding:12px}.title{font-weight:750;line-height:1.4}.channel,.duration{font-size:13px;color:var(--muted);margin-top:6px}
+.more-wrap{text-align:center;padding:24px 0 45px}
+@media(max-width:520px){header{padding:12px 15px}.brand{font-size:19px}main{margin:20px auto}.search{padding:9px}.search button{padding:10px 13px}.grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
-<header class="top"><div class="brand">PRAFUL SOCIAL</div><div class="actions"><span class="auth-user" id="authUserLabel">Not signed in</span><button class="pill" onclick="showToast('Search is coming in the next version')">⌕ Search</button><button class="pill" id="signOutBtn" style="display:none" onclick="signOutUser()">Sign out</button><button class="primary" id="authOpenBtn" onclick="openAuthModal()">Login / Signup</button><button class="pill" onclick="openProfile()">☺ Profile</button><button class="primary" onclick="openModal()">＋ Create</button></div></header>
-<div class="wrap"><main>
-<section class="stories" aria-label="Stories">
-<div class="story"><div class="avatar"><span>＋</span></div>Your story</div>
-<div class="story"><div class="avatar"><span>😎</span></div>😎</div><div class="story"><div class="avatar"><span>🌸</span></div>PRAFUL</div><div class="story"><div class="avatar"><span>🎧</span></div>Music</div><div class="story"><div class="avatar"><span>🏏</span></div>Cricket</div><div class="story"><div class="avatar"><span>🚀</span></div>Travel</div>
-</section>
-<section class="composer"><div class="compose-row"><div class="mini">P</div><input id="quickCaption" placeholder="What's on your mind?"><button class="primary" onclick="openModal()">Post</button></div></section>
-<section class="reels-section" id="reels">
-  <div class="reels-head"><h2>▶ PRAFUL AUTO REELS</h2><span class="tag">YouTube videos</span></div>
-  <div class="reels-controls">
-    <select id="reelCategory" aria-label="Choose reels category">
-      <option value="trending">Trending</option><option value="comedy">Comedy</option><option value="funny">Funny</option><option value="music">Music</option><option value="dance">Dance</option><option value="gaming">Gaming</option><option value="sports">Sports</option><option value="movies">Movies</option><option value="travel">Travel</option><option value="technology">Technology</option><option value="Hindi">Hindi</option><option value="Gujarati">Gujarati</option>
-    </select>
-    <button type="button" id="loadReels">Load Reels</button><button type="button" id="loadMoreReels" style="display:none">Load More 50</button>
-  </div>
-  <p class="reels-status" id="reelsStatus" role="status">Loading trending reels…</p><div class="reels-grid" id="reelsGrid"></div>
-</section>
-<section class="videos-section" id="videos">
-  <div class="videos-head">
-    <h2>▶ PRAFUL AUTO VIDEOS</h2>
-    <span class="tag">1 Minute – 8 Hours</span>
-  </div>
-  <div class="videos-controls">
-    <select id="videoCategory" aria-label="Choose videos category">
-      <option value="trending">Trending</option>
-      <option value="comedy">Comedy</option>
-      <option value="funny">Funny</option>
-      <option value="music">Music</option>
-      <option value="gaming">Gaming</option>
-      <option value="sports">Sports</option>
-      <option value="movies">Movies</option>
-      <option value="travel">Travel</option>
-      <option value="technology">Technology</option>
-      <option value="Hindi">Hindi</option>
-      <option value="Gujarati">Gujarati</option>
-    </select>
-    <button type="button" id="loadVideos">Load Videos</button>
-    <button type="button" id="loadMoreVideos" style="display:none">Load More 50</button>
-  </div>
-  <p class="videos-status" id="videosStatus" role="status">Loading videos…</p>
-  <div class="videos-grid" id="videosGrid"></div>
-</section>
-<div id="feed">
-<article class="post"><div class="posthead"><div class="mini">P</div><div><div class="username">praful_creator</div><div class="sub">Suggested post · Just now</div></div></div><div class="postvisual">🌅</div><div class="postbuttons"><button class="iconbtn" onclick="like(this)">♡</button><button class="iconbtn" onclick="showToast('Comments are ready for the next version')">▢</button><button class="iconbtn" onclick="showToast('Share feature coming soon')">➤</button></div><div class="postbody"><b class="likes">12 likes</b><p class="caption"><b>praful_creator</b> Welcome to PRAFUL SOCIAL! Share your moments with everyone. ✨</p><div class="sub">Be the first to comment</div><div class="commentbox"><input placeholder="Add a comment..." onkeydown="if(event.key==='Enter'){showToast('Comment saved in this demo');this.value=''}"><button class="pill" onclick="showToast('Comment feature coming soon')">Send</button></div></div></article>
-</div>
-</main><aside class="side"><section class="sidecard"><h3>Welcome to PRAFUL SOCIAL 👋</h3><p>Your own social space to share photos, videos and moments.</p><span class="tag">Photos</span><span class="tag">Reels</span><span class="tag">Friends</span><hr style="border-color:var(--line);margin:17px 0"><b>Coming next</b><p>Real accounts are connected to Supabase. Posts, likes, follows and chat still need their database features added.</p></section></aside></div>
-<nav class="bottom"><button class="navbtn" onclick="showToast('Home')">⌂</button><button class="navbtn" onclick="showToast('Explore coming soon')">⌕</button><button class="navbtn" onclick="openModal()">＋</button><button class="navbtn" onclick="document.getElementById('reels').scrollIntoView({behavior:'smooth'})">▣</button><button class="navbtn" onclick="document.getElementById('videos').scrollIntoView({behavior:'smooth'})">▶</button><button class="navbtn" onclick="openProfile()">☺</button></nav>
-
-<div class="modal" id="authModal" onclick="if(event.target===this)closeAuthModal()"><div class="dialog">
-<h2 id="authTitle">Login to PRAFUL SOCIAL</h2>
-<div class="auth-tabs"><button class="primary" id="loginTab" onclick="setAuthMode('login')">Login</button><button class="pill" id="signupTab" onclick="setAuthMode('signup')">Sign up</button></div>
-<label for="authEmail">Email address</label><input id="authEmail" type="email" autocomplete="email" placeholder="you@example.com">
-<label for="authPassword">Password</label><input id="authPassword" type="password" autocomplete="current-password" placeholder="At least 6 characters">
-<p class="auth-note" id="authHint">Use your registered email and password.</p>
-<p class="auth-message" id="authMessage" role="status"></p>
-<div class="dialog-actions"><button class="pill" onclick="closeAuthModal()">Close</button><button class="primary" id="authSubmitBtn" onclick="submitAuth()">Login</button></div>
-</div></div>
-
-
-<div class="modal" id="profileModal" onclick="if(event.target===this)closeProfile()"><div class="dialog">
-<h2>My Profile</h2>
-<div class="profile-preview">
-<img id="profileAvatarPreview" class="profile-avatar" alt="Profile photo" src="https://placehold.co/100x100/27324c/ffffff?text=P">
-<strong id="profileDisplayPreview">Your name</strong>
-<small id="profileUsernamePreview">@username</small>
-</div>
-<label for="profileDisplayName">Display name</label><input id="profileDisplayName" maxlength="60" placeholder="Your name">
-<label for="profileUsername">Username</label><input id="profileUsername" maxlength="30" placeholder="your_username">
-<label for="profileBio">Bio</label><textarea id="profileBio" maxlength="160" placeholder="Write a short bio..."></textarea>
-<label for="profileAvatarUrl">Profile photo URL (optional)</label><input id="profileAvatarUrl" type="url" placeholder="https://example.com/photo.jpg">
-<p class="auth-note">Photo ke liye public image URL paste karein. Direct photo upload baad mein add karenge.</p>
-<p class="auth-message" id="profileMessage" role="status"></p>
-<div class="dialog-actions"><button class="pill" onclick="closeProfile()">Close</button><button class="primary" id="saveProfileBtn" onclick="saveProfile()">Save Profile</button></div>
-</div></div>
-
-<div class="modal" id="modal" onclick="if(event.target===this)closeModal()"><div class="dialog"><h2>Create a post</h2><label for="caption">Caption</label><textarea id="caption" placeholder="Write something..."></textarea><label for="media">Choose photo or video (preview demo)</label><input id="media" type="file" accept="image/*,video/*"><div class="dialog-actions"><button class="pill" onclick="closeModal()">Cancel</button><button class="primary" onclick="publish()">Publish</button></div></div></div><div class="toast" id="toast"></div>
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<header><div class="brand">▶ PRAFUL <span>YOUTUBE</span></div></header>
+<main>
+<h1>YouTube Video Search</h1>
+<p class="intro">YouTube par jo bhi search karna ho, yahan likhiye.</p>
+<form class="search" id="searchForm">
+<input id="searchInput" type="search" placeholder="Search anything... e.g. Gujarati comedy, songs, cricket" autocomplete="off" required>
+<button id="searchButton" type="submit">Search</button>
+</form>
+<p class="hint">1 minute se 8 ghante tak ke videos • Search results YouTube se</p>
+<div class="status" id="status" role="status">Trending videos load ho rahe hain...</div>
+<section class="grid" id="videoGrid"></section>
+<div class="more-wrap"><button id="loadMore" type="button" hidden>Load More Videos</button></div>
+</main>
 <script>
-const SUPABASE_URL = 'https://donlmffacijpcwrzjhxw.supabase.co';
-const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_vYO6Hx1mouJn22XrqIDDlQ_lYEUWaoZ';
-const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
-let authMode = 'login';
+const API = 'https://praful-social-api.bambhaniyapraful7.workers.dev/videos';
+const form = document.getElementById('searchForm');
+const input = document.getElementById('searchInput');
+const statusBox = document.getElementById('status');
+const grid = document.getElementById('videoGrid');
+const searchButton = document.getElementById('searchButton');
+const moreButton = document.getElementById('loadMore');
+let currentQuery = 'trending';
+let nextPageToken = '';
+let loading = false;
+let seen = new Set();
 
-function openAuthModal(){document.getElementById('authModal').classList.add('show');document.getElementById('authEmail').focus();setAuthMode(authMode)}
-function closeAuthModal(){document.getElementById('authModal').classList.remove('show')}
-function setAuthMode(mode){
-  authMode=mode;
-  document.getElementById('authTitle').textContent=mode==='signup'?'Create your PRAFUL SOCIAL account':'Login to PRAFUL SOCIAL';
-  document.getElementById('authSubmitBtn').textContent=mode==='signup'?'Create account':'Login';
-  document.getElementById('authHint').textContent=mode==='signup'?'Enter your email and create a password. If email confirmation is enabled, check your inbox.':'Use your registered email and password.';
-  document.getElementById('loginTab').className=mode==='login'?'primary':'pill';
-  document.getElementById('signupTab').className=mode==='signup'?'primary':'pill';
-  document.getElementById('authMessage').textContent='';
+function durationText(seconds) {
+  const n = Math.max(0, Number(seconds) || 0);
+  const h = Math.floor(n / 3600);
+  const m = Math.floor((n % 3600) / 60);
+  const s = n % 60;
+  return h ? `${h}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}` : `${m}:${String(s).padStart(2,'0')}`;
 }
-async function submitAuth(){
-  const email=document.getElementById('authEmail').value.trim();
-  const password=document.getElementById('authPassword').value;
-  const message=document.getElementById('authMessage');
-  const button=document.getElementById('authSubmitBtn');
-  if(!email||!password){message.textContent='Please enter email and password.';return}
-  if(password.length<6){message.textContent='Password must be at least 6 characters.';return}
-  button.disabled=true;button.textContent='Please wait…';message.textContent='';
-  try{
-    if(authMode==='signup'){
-      const {data,error}=await supabaseClient.auth.signUp({email,password});
-      if(error)throw error;
-      if(data.session){message.textContent='Account created and signed in!';}
-      else{message.textContent='Signup request successful. Check your email to confirm your account, then log in.';}
-    }else{
-      const {error}=await supabaseClient.auth.signInWithPassword({email,password});
-      if(error)throw error;
-      message.textContent='Login successful!';
-      setTimeout(closeAuthModal,700);
-    }
-  }catch(error){message.textContent=error.message||'Authentication failed. Please try again.'}
-  finally{button.disabled=false;button.textContent=authMode==='signup'?'Create account':'Login'}
+function addVideo(video) {
+  if (!video || !video.id || seen.has(video.id)) return false;
+  seen.add(video.id);
+  const card = document.createElement('article');
+  card.className = 'card';
+  const player = document.createElement('div');
+  player.className = 'player';
+  const frame = document.createElement('iframe');
+  frame.src = 'https://www.youtube-nocookie.com/embed/' + encodeURIComponent(video.id);
+  frame.title = video.title || 'YouTube video';
+  frame.loading = 'lazy';
+  frame.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
+  frame.allowFullscreen = true;
+  player.appendChild(frame);
+  const info = document.createElement('div');
+  info.className = 'info';
+  const title = document.createElement('div');
+  title.className = 'title';
+  title.textContent = video.title || 'YouTube video';
+  const channel = document.createElement('div');
+  channel.className = 'channel';
+  channel.textContent = video.channel || 'YouTube creator';
+  const duration = document.createElement('div');
+  duration.className = 'duration';
+  duration.textContent = 'Duration: ' + durationText(video.durationSeconds);
+  info.append(title, channel, duration);
+  card.append(player, info);
+  grid.appendChild(card);
+  return true;
 }
-async function signOutUser(){
-  const {error}=await supabaseClient.auth.signOut();
-  if(error)showToast(error.message);else showToast('Signed out');
-}
-function updateAuthUI(user){
-  const label=document.getElementById('authUserLabel');
-  const openBtn=document.getElementById('authOpenBtn');
-  const outBtn=document.getElementById('signOutBtn');
-  if(user){label.textContent=user.email||'Signed in';openBtn.style.display='none';outBtn.style.display='inline-block'}
-  else{label.textContent='Not signed in';openBtn.style.display='inline-block';outBtn.style.display='none'}
-}
-async function initAuth(){
-  const {data:{session}}=await supabaseClient.auth.getSession();
-  updateAuthUI(session?.user||null);
-  supabaseClient.auth.onAuthStateChange((_event,newSession)=>updateAuthUI(newSession?.user||null));
-}
-initAuth();
-
-let currentProfileUser=null;
-function updateProfilePreview(){
- const name=document.getElementById('profileDisplayName').value.trim()||'Your name';
- const username=document.getElementById('profileUsername').value.trim().replace(/^@/,'')||'username';
- const url=document.getElementById('profileAvatarUrl').value.trim();
- document.getElementById('profileDisplayPreview').textContent=name;
- document.getElementById('profileUsernamePreview').textContent='@'+username;
- document.getElementById('profileAvatarPreview').src=url||'https://placehold.co/100x100/27324c/ffffff?text=P';
-}
-async function openProfile(){
- const {data:{user}}=await supabaseClient.auth.getUser();
- if(!user){showToast('Please login first');openAuthModal();return}
- currentProfileUser=user;
- const message=document.getElementById('profileMessage');
- message.textContent='Loading profile…';
- document.getElementById('profileModal').classList.add('show');
- try{
-  const {data,error}=await supabaseClient.from('profiles').select('username,display_name,bio,avatar_url').eq('id',user.id).maybeSingle();
-  if(error)throw error;
-  document.getElementById('profileDisplayName').value=data?.display_name||'';
-  document.getElementById('profileUsername').value=data?.username||'';
-  document.getElementById('profileBio').value=data?.bio||'';
-  document.getElementById('profileAvatarUrl').value=data?.avatar_url||'';
-  updateProfilePreview();
-  message.textContent=data?'Your profile is ready.':'Profile record nahi mili. Please contact support.';
- }catch(error){message.textContent='Load error: '+(error.message||'Please try again.')}
-}
-function closeProfile(){document.getElementById('profileModal').classList.remove('show')}
-async function saveProfile(){
- const user=currentProfileUser, message=document.getElementById('profileMessage'), button=document.getElementById('saveProfileBtn');
- if(!user){message.textContent='Please login first.';return}
- const username=document.getElementById('profileUsername').value.trim().replace(/^@/,'').toLowerCase();
- const display_name=document.getElementById('profileDisplayName').value.trim();
- const bio=document.getElementById('profileBio').value.trim();
- const avatar_url=document.getElementById('profileAvatarUrl').value.trim();
- if(!/^[a-z0-9_.]{3,30}$/.test(username)){message.textContent='Username 3–30 characters ka ho: letters, numbers, _ ya .';return}
- if(avatar_url&&!/^https:\/\/.+/i.test(avatar_url)){message.textContent='Photo URL https:// se shuru hona chahiye.';return}
- button.disabled=true;button.textContent='Saving…';message.textContent='';
- try{
-  const {error}=await supabaseClient.from('profiles').update({username,display_name,bio,avatar_url}).eq('id',user.id);
-  if(error)throw error;
-  message.textContent='Profile saved successfully!';
-  showToast('Profile updated');
- }catch(error){message.textContent='Save error: '+(error.message||'Please try again.')}
- finally{button.disabled=false;button.textContent='Save Profile'}
-}
-['profileDisplayName','profileUsername','profileAvatarUrl','profileBio'].forEach(id=>{
- document.getElementById(id).addEventListener('input',updateProfilePreview);
-});
-
-
-const REELS_API = 'https://praful-social-api.bambhaniyapraful7.workers.dev/reels';
-let reelsNextPageToken = '';
-let reelsLoadedCount = 0;
-let reelsLoading = false;
-let reelsSeenIds = new Set();
-async function loadReels(loadMore = false) {
-  if (reelsLoading) return;
-  const category=document.getElementById('reelCategory').value;
-  const status=document.getElementById('reelsStatus');
-  const grid=document.getElementById('reelsGrid');
-  const moreButton=document.getElementById('loadMoreReels');
-  if(loadMore&&!reelsNextPageToken)return;
-  if(!loadMore){reelsNextPageToken='';reelsLoadedCount=0;reelsSeenIds=new Set();grid.replaceChildren();moreButton.style.display='none'}
-  reelsLoading=true;
-  const pageToken=loadMore?reelsNextPageToken:'';
-  status.textContent=loadMore?'Loading more '+category+' reels…':'Loading '+category+' reels…';
-  moreButton.disabled=true;moreButton.textContent='Loading…';
-  try{
-    let apiUrl=REELS_API+'?category='+encodeURIComponent(category);
-    if(pageToken)apiUrl+='&pageToken='+encodeURIComponent(pageToken);
-    const response=await fetch(apiUrl);const data=await response.json();
-    if(!response.ok)throw new Error(data.details||data.error||'Could not load reels');
-    const videos=Array.isArray(data.videos)?data.videos:[];let added=0;
-    videos.forEach(video=>{
-      if(!video||!video.id||reelsSeenIds.has(video.id))return;
-      reelsSeenIds.add(video.id);
-      const card=document.createElement('article');card.className='reel-card';
-      const player=document.createElement('div');player.className='reel-player';
-      const frame=document.createElement('iframe');frame.src='https://www.youtube-nocookie.com/embed/'+encodeURIComponent(video.id);frame.title=video.title||'YouTube video';frame.loading='lazy';frame.allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';frame.allowFullscreen=true;player.appendChild(frame);
-      const info=document.createElement('div');info.className='reel-info';
-      const title=document.createElement('div');title.className='reel-title';title.textContent=video.title||'YouTube Reel';
-      const channel=document.createElement('div');channel.className='reel-channel';channel.textContent=video.channel||'YouTube creator';
-      info.append(title,channel);card.append(player,info);grid.appendChild(card);added++;
-    });
-    reelsLoadedCount+=added;reelsNextPageToken=data.nextPageToken||'';
-    if(reelsNextPageToken){moreButton.style.display='inline-block';moreButton.disabled=false;moreButton.textContent='Load More 50'}else moreButton.style.display='none';
-    if(!reelsLoadedCount)status.textContent='No videos found. Please try another category.';
-    else if(reelsNextPageToken)status.textContent='Showing '+reelsLoadedCount+' videos in '+category+'. More videos are available.';
-    else status.textContent='Showing '+reelsLoadedCount+' videos in '+category+'. No more pages are currently available.';
-  }catch(error){status.textContent='Reels load nahi hue: '+error.message;if(loadMore&&reelsNextPageToken){moreButton.style.display='inline-block';moreButton.disabled=false;moreButton.textContent='Try Load More Again'}}
-  finally{reelsLoading=false;if(moreButton.style.display!=='none'&&moreButton.disabled){moreButton.disabled=false;moreButton.textContent='Load More 50'}}
-}
-document.getElementById('loadReels').addEventListener('click',()=>loadReels(false));
-document.getElementById('loadMoreReels').addEventListener('click',()=>loadReels(true));
-document.getElementById('reelCategory').addEventListener('change',()=>loadReels(false));
-window.addEventListener('load',()=>loadReels(false));
-
-
-const VIDEOS_API = 'https://praful-social-api.bambhaniyapraful7.workers.dev/videos';
-let videosNextPageToken = '';
-let videosLoadedCount = 0;
-let videosLoading = false;
-let videosSeenIds = new Set();
-
-function formatVideoDuration(seconds) {
-  const total = Math.max(0, Number(seconds) || 0);
-  const h = Math.floor(total / 3600);
-  const m = Math.floor((total % 3600) / 60);
-  const s = total % 60;
-  if (h) return h + ':' + String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
-  return m + ':' + String(s).padStart(2, '0');
-}
-
-async function loadVideos(loadMore = false) {
-  if (videosLoading) return;
-
-  const category = document.getElementById('videoCategory').value;
-  const status = document.getElementById('videosStatus');
-  const grid = document.getElementById('videosGrid');
-  const moreButton = document.getElementById('loadMoreVideos');
-
-  if (loadMore && !videosNextPageToken) return;
-
+async function searchVideos(query, loadMore=false) {
+  if (loading) return;
   if (!loadMore) {
-    videosNextPageToken = '';
-    videosLoadedCount = 0;
-    videosSeenIds = new Set();
+    currentQuery = query.trim() || 'trending';
+    nextPageToken = '';
+    seen = new Set();
     grid.replaceChildren();
-    moreButton.style.display = 'none';
+    moreButton.hidden = true;
   }
-
-  videosLoading = true;
-  const pageToken = loadMore ? videosNextPageToken : '';
-  status.textContent = loadMore ? 'Loading more ' + category + ' videos…' : 'Loading ' + category + ' videos…';
+  if (loadMore && !nextPageToken) return;
+  loading = true;
+  searchButton.disabled = true;
   moreButton.disabled = true;
-  moreButton.textContent = 'Loading…';
-
+  statusBox.textContent = loadMore ? 'Aur videos load ho rahe hain...' : `“${currentQuery}” search ho raha hai...`;
   try {
-    let apiUrl = VIDEOS_API + '?category=' + encodeURIComponent(category);
-    if (pageToken) apiUrl += '&pageToken=' + encodeURIComponent(pageToken);
-
-    const response = await fetch(apiUrl);
+    let url = API + '?category=' + encodeURIComponent(currentQuery);
+    if (loadMore && nextPageToken) url += '&pageToken=' + encodeURIComponent(nextPageToken);
+    const response = await fetch(url);
     const data = await response.json();
-    if (!response.ok) throw new Error(data.details || data.error || 'Could not load videos');
-
+    if (!response.ok) throw new Error(data.details || data.error || 'YouTube search failed');
     const videos = Array.isArray(data.videos) ? data.videos : [];
     let added = 0;
-
-    videos.forEach(video => {
-      if (!video || !video.id || videosSeenIds.has(video.id)) return;
-      videosSeenIds.add(video.id);
-
-      const card = document.createElement('article');
-      card.className = 'video-card';
-
-      const player = document.createElement('div');
-      player.className = 'video-player';
-
-      const frame = document.createElement('iframe');
-      frame.src = 'https://www.youtube-nocookie.com/embed/' + encodeURIComponent(video.id);
-      frame.title = video.title || 'YouTube video';
-      frame.loading = 'lazy';
-      frame.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
-      frame.allowFullscreen = true;
-      player.appendChild(frame);
-
-      const info = document.createElement('div');
-      info.className = 'video-info';
-
-      const title = document.createElement('div');
-      title.className = 'video-title';
-      title.textContent = video.title || 'YouTube video';
-
-      const channel = document.createElement('div');
-      channel.className = 'video-channel';
-      channel.textContent = video.channel || 'YouTube creator';
-
-      const duration = document.createElement('div');
-      duration.className = 'video-duration';
-      duration.textContent = 'Duration: ' + formatVideoDuration(video.durationSeconds);
-
-      info.append(title, channel, duration);
-      card.append(player, info);
-      grid.appendChild(card);
-      added++;
-    });
-
-    videosLoadedCount += added;
-    videosNextPageToken = data.nextPageToken || '';
-
-    if (videosNextPageToken) {
-      moreButton.style.display = 'inline-block';
-      moreButton.disabled = false;
-      moreButton.textContent = 'Load More 50';
-    } else {
-      moreButton.style.display = 'none';
-    }
-
-    if (!videosLoadedCount) {
-      status.textContent = 'No videos found. Please try another category.';
-    } else if (videosNextPageToken) {
-      status.textContent = 'Showing ' + videosLoadedCount + ' videos in ' + category + '. More videos are available.';
-    } else {
-      status.textContent = 'Showing ' + videosLoadedCount + ' videos in ' + category + '. No more pages are currently available.';
-    }
-  } catch (error) {
-    status.textContent = 'Videos load nahi hue: ' + (error.message || 'Please try again.');
-    if (loadMore && videosNextPageToken) {
-      moreButton.style.display = 'inline-block';
-      moreButton.disabled = false;
-      moreButton.textContent = 'Try Load More Again';
-    }
+    videos.forEach(v => { if (addVideo(v)) added++; });
+    nextPageToken = data.nextPageToken || '';
+    statusBox.textContent = added ? `${added} videos mil gaye. Search: ${currentQuery}` : 'Is search ke liye videos nahi mile. Dusra word search karein.';
+    moreButton.hidden = !nextPageToken;
+  } catch (err) {
+    statusBox.textContent = 'Error: ' + (err.message || 'Videos load nahi hue. Internet/API check karein.');
   } finally {
-    videosLoading = false;
-    if (moreButton.style.display !== 'none' && moreButton.disabled) {
-      moreButton.disabled = false;
-      moreButton.textContent = 'Load More 50';
-    }
+    loading = false;
+    searchButton.disabled = false;
+    moreButton.disabled = false;
   }
 }
-
-document.getElementById('loadVideos').addEventListener('click', () => loadVideos(false));
-document.getElementById('loadMoreVideos').addEventListener('click', () => loadVideos(true));
-document.getElementById('videoCategory').addEventListener('change', () => loadVideos(false));
-window.addEventListener('load', () => loadVideos(false));
-
-function showToast(s){let t=document.getElementById('toast');t.textContent=s;t.style.display='block';setTimeout(()=>t.style.display='none',2300)}
-function openModal(){document.getElementById('modal').classList.add('show');document.getElementById('caption').focus()}
-function closeModal(){document.getElementById('modal').classList.remove('show')}
-function like(b){b.textContent=b.textContent==='♡'?'♥':'♡';b.style.color=b.textContent==='♥'?'#ff4d8d':'';let n=b.closest('.post').querySelector('.likes');let count=Number(n.dataset.count||12);count=b.textContent==='♥'?count+1:count-1;n.dataset.count=count;n.textContent=count+' likes'}
-function publish(){
-  let cap=document.getElementById('caption').value.trim();let f=document.getElementById('media').files[0];let visual='✨';
-  if(f&&f.type.startsWith('image/'))visual='<img alt="Your selected photo" src="'+URL.createObjectURL(f)+'" style="width:100%;height:100%;object-fit:cover">';
-  else if(f&&f.type.startsWith('video/'))visual='<video controls src="'+URL.createObjectURL(f)+'" style="width:100%;height:100%;object-fit:cover"></video>';
-  if(!cap&&!f){showToast('Please write a caption or choose a photo/video');return}
-  let a=document.createElement('article');a.className='post';
-  a.innerHTML=`<div class="posthead"><div class="mini">P</div><div><div class="username">you</div><div class="sub">Just now · Demo post</div></div></div><div class="postvisual">${visual}</div><div class="postbuttons"><button class="iconbtn" onclick="like(this)">♡</button></div><div class="postbody"><b class="likes" data-count="0">0 likes</b><p class="caption"><b>you</b> ${escapeHtml(cap)}</p></div>`;
-  document.getElementById('feed').prepend(a);closeModal();document.getElementById('caption').value='';document.getElementById('media').value='';document.getElementById('quickCaption').value='';showToast('Post added to this preview only');
-}
-function escapeHtml(s){return s.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
-document.getElementById('quickCaption').addEventListener('keydown',e=>{if(e.key==='Enter'){document.getElementById('caption').value=e.target.value;openModal()}});
-if('serviceWorker'in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
+form.addEventListener('submit', e => {
+  e.preventDefault();
+  searchVideos(input.value);
+});
+moreButton.addEventListener('click', () => searchVideos(currentQuery, true));
+searchVideos('trending');
 </script>
-</body></html>
+</body>
+</html>
