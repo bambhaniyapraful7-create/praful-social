@@ -1,10 +1,13 @@
 {
-  "name": "PRAFUL SOCIAL",
-  "short_name": "PRAFUL",
-  "start_url": "./",
+  "background_color": "#111111",
+  "description": "Search and watch YouTube videos.",
+  "dir": "ltr",
   "display": "standalone",
-  "background_color": "#0b1020",
-  "theme_color": "#111827",
-  "description": "Share your moments with PRAFUL SOCIAL",
-  "icons": []
+  "name": "bambhaniyapraful7-create.github",
+  "orientation": "any",
+  "scope": "/",
+  "short_name": "PRAFUL",
+  "start_url": "/",
+  "theme_color": "#111111",
+  "id": "\tpraful-youtube"
 }
