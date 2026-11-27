@@ -26,12 +26,29 @@ button:disabled{opacity:.55;cursor:wait}
 .card{background:var(--panel);border:1px solid var(--line);border-radius:15px;overflow:hidden;min-width:0}
 .player{aspect-ratio:16/9;background:#05070d}.player iframe{width:100%;height:100%;border:0}
 .info{padding:12px}.title{font-weight:750;line-height:1.4}.channel,.duration{font-size:13px;color:var(--muted);margin-top:6px}
-.more-wrap{text-align:center;padding:24px 0 45px}
+.more-wrap{text-align:center;padding:24px 0 100px}
+.theme-toggle{background:#26334d;border:1px solid var(--line);padding:9px 13px}
+body.light{color-scheme:light;--bg:#f3f5fb;--panel:#ffffff;--line:#d8deeb;--muted:#5f6b80;color:#172033}
+body.light header{background:#ffffffed}
+body.light .search input{background:#f6f8fc;color:#172033}
+body.light .category{background:#e9edf7;color:#26334d}
+body.light .category.active,body.light .category:hover{background:var(--accent);color:white}
+body.light .theme-toggle{background:#e9edf7;color:#26334d}
+.bottom-nav{position:fixed;z-index:10;bottom:0;left:0;right:0;display:flex;justify-content:space-around;gap:4px;padding:9px 8px calc(9px + env(safe-area-inset-bottom));background:#101827f5;border-top:1px solid var(--line);backdrop-filter:blur(12px)}
+.bottom-nav button{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:7px 4px;background:transparent;color:#cbd4e7;font-size:12px}
+.bottom-nav button.active{color:#b7aaff;background:#28304a;border-radius:12px}
+body.light .bottom-nav{background:#fffffff2}
+body.light .bottom-nav button{color:#58647a}
+body.light .bottom-nav button.active{color:#5b43d6;background:#eeeaff}
+.profile-panel{display:none;margin:18px 0;padding:22px;background:var(--panel);border:1px solid var(--line);border-radius:16px;text-align:center}
+.profile-panel.show{display:block}
+.profile-avatar{width:72px;height:72px;margin:0 auto 12px;border-radius:50%;display:grid;place-items:center;background:var(--accent);font-size:30px;font-weight:900}
+@media(max-width:520px){header{padding:12px 15px}.brand{font-size:19px}main{margin:20px auto;padding-bottom:80px}.search{padding:9px}.search button{padding:10px 13px}.grid{grid-template-columns:1fr}}
 @media(max-width:520px){header{padding:12px 15px}.brand{font-size:19px}main{margin:20px auto}.search{padding:9px}.search button{padding:10px 13px}.grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
-<header><div class="brand">▶ PRAFUL <span>YOUTUBE</span></div></header>
+<header><div class="brand">▶ PRAFUL <span>YOUTUBE</span></div><button id="themeToggle" class="theme-toggle" type="button" aria-label="Toggle light and dark mode">☀️ Light</button></header>
 <main>
 <h1>YouTube Video Search</h1>
 <p class="intro">YouTube par jo bhi search karna ho, yahan likhiye.</p>
@@ -55,9 +72,22 @@ button:disabled{opacity:.55;cursor:wait}
 
 <p class="hint">1 minute se 8 ghante tak ke videos • Search results YouTube se</p>
 <div class="status" id="status" role="status">Trending videos load ho rahe hain...</div>
+<section class="profile-panel" id="profilePanel">
+  <div class="profile-avatar">P</div>
+  <h2 style="margin:0 0 5px">PRAFUL YOUTUBE</h2>
+  <p class="intro" style="margin:0">Welcome! Search and watch YouTube videos here.</p>
+  <p class="hint">Guest mode • No account or sign-in required</p>
+  <button type="button" id="backToVideos">Back to Videos</button>
+</section>
 <section class="grid" id="videoGrid"></section>
 <div class="more-wrap"><button id="loadMore" type="button" hidden>Load More Videos</button></div>
 </main>
+<nav class="bottom-nav" aria-label="Main navigation">
+  <button type="button" class="active" data-nav="home"><span>⌂</span><span>Home</span></button>
+  <button type="button" data-nav="search"><span>⌕</span><span>Search</span></button>
+  <button type="button" data-nav="categories"><span>▦</span><span>Categories</span></button>
+  <button type="button" data-nav="profile"><span>●</span><span>Profile</span></button>
+</nav>
 <script>
 const API = 'https://praful-social-api.bambhaniyapraful7.workers.dev/videos';
 const form = document.getElementById('searchForm');
@@ -67,6 +97,53 @@ const grid = document.getElementById('videoGrid');
 const searchButton = document.getElementById('searchButton');
 const moreButton = document.getElementById('loadMore');
 const categoryButtons = [...document.querySelectorAll('.category')];
+const themeToggle = document.getElementById('themeToggle');
+const profilePanel = document.getElementById('profilePanel');
+const backToVideos = document.getElementById('backToVideos');
+const navButtons = [...document.querySelectorAll('.bottom-nav button')];
+
+themeToggle.addEventListener('click', () => {
+  const light = document.body.classList.toggle('light');
+  themeToggle.textContent = light ? '🌙 Dark' : '☀️ Light';
+});
+function setNavActive(name) {
+  navButtons.forEach(button => button.classList.toggle('active', button.dataset.nav === name));
+}
+function showVideos() {
+  profilePanel.classList.remove('show');
+  grid.style.display = 'grid';
+  document.getElementById('status').style.display = '';
+  document.querySelector('.more-wrap').style.display = '';
+}
+navButtons.forEach(button => {
+  button.addEventListener('click', () => {
+    const page = button.dataset.nav;
+    setNavActive(page);
+    if (page === 'home') {
+      showVideos();
+      searchVideos('trending');
+      window.scrollTo({top: 0, behavior: 'smooth'});
+    } else if (page === 'search') {
+      showVideos();
+      input.focus();
+      input.scrollIntoView({behavior: 'smooth', block: 'center'});
+    } else if (page === 'categories') {
+      showVideos();
+      document.getElementById('categories').scrollIntoView({behavior: 'smooth', block: 'center'});
+    } else if (page === 'profile') {
+      profilePanel.classList.add('show');
+      grid.style.display = 'none';
+      document.getElementById('status').style.display = 'none';
+      document.querySelector('.more-wrap').style.display = 'none';
+      profilePanel.scrollIntoView({behavior: 'smooth', block: 'center'});
+    }
+  });
+});
+backToVideos.addEventListener('click', () => {
+  showVideos();
+  setNavActive('home');
+  window.scrollTo({top: 0, behavior: 'smooth'});
+});
 let currentQuery = 'trending';
 let nextPageToken = '';
 let loading = false;
@@ -117,6 +194,7 @@ function addVideo(video) {
 async function searchVideos(query, loadMore=false) {
   if (loading) return;
   if (!loadMore) {
+    showVideos();
     currentQuery = query.trim() || 'trending';
     nextPageToken = '';
     seen = new Set();
@@ -164,3 +242,4 @@ searchVideos('trending');
 </script>
 </body>
 </html>
+
