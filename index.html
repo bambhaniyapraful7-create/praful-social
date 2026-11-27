@@ -71,6 +71,7 @@ main{min-width:0}.stories,.composer,.post,.sidecard{background:var(--panel);bord
       <option value="Gujarati">Gujarati</option>
     </select>
     <button type="button" id="loadReels">Load Reels</button>
+    <button type="button" id="loadMoreReels" style="display:none">Load More 50</button>
   </div>
   <p class="reels-status" id="reelsStatus" role="status">Loading trending reels…</p>
   <div class="reels-grid" id="reelsGrid"></div>
@@ -85,25 +86,60 @@ main{min-width:0}.stories,.composer,.post,.sidecard{background:var(--panel);bord
 <script>
 
 const REELS_API = 'https://praful-social-api.bambhaniyapraful7.workers.dev/reels';
-async function loadReels(){
+let reelsNextPageToken = '';
+let reelsLoadedCount = 0;
+let reelsLoading = false;
+let reelsSeenIds = new Set();
+
+async function loadReels(loadMore = false) {
+  if (reelsLoading) return;
+
   const category = document.getElementById('reelCategory').value;
   const status = document.getElementById('reelsStatus');
   const grid = document.getElementById('reelsGrid');
-  status.textContent = 'Loading ' + category + ' reels…';
-  grid.replaceChildren();
+  const moreButton = document.getElementById('loadMoreReels');
+
+  if (loadMore && !reelsNextPageToken) return;
+
+  if (!loadMore) {
+    reelsNextPageToken = '';
+    reelsLoadedCount = 0;
+    reelsSeenIds = new Set();
+    grid.replaceChildren();
+    moreButton.style.display = 'none';
+  }
+
+  reelsLoading = true;
+  const pageToken = loadMore ? reelsNextPageToken : '';
+  status.textContent = loadMore
+    ? 'Loading more ' + category + ' reels…'
+    : 'Loading ' + category + ' reels…';
+  moreButton.disabled = true;
+  moreButton.textContent = 'Loading…';
+
   try {
-    const response = await fetch(REELS_API + '?category=' + encodeURIComponent(category));
+    let apiUrl = REELS_API + '?category=' + encodeURIComponent(category);
+    if (pageToken) apiUrl += '&pageToken=' + encodeURIComponent(pageToken);
+
+    const response = await fetch(apiUrl);
     const data = await response.json();
-    if (!response.ok) throw new Error(data.details || data.error || 'Could not load reels');
-    if (!data.videos || !data.videos.length) {
-      status.textContent = 'No videos found. Please try another category.';
-      return;
+    if (!response.ok) {
+      throw new Error(data.details || data.error || 'Could not load reels');
     }
-    data.videos.forEach(video => {
+
+    const videos = Array.isArray(data.videos) ? data.videos : [];
+    let added = 0;
+
+    videos.forEach(video => {
+      if (!video || !video.id || reelsSeenIds.has(video.id)) return;
+      reelsSeenIds.add(video.id);
+
       const card = document.createElement('article');
       card.className = 'reel-card';
+
       const player = document.createElement('div');
       player.className = 'reel-player';
+
       const frame = document.createElement('iframe');
       frame.src = 'https://www.youtube-nocookie.com/embed/' + encodeURIComponent(video.id);
       frame.title = video.title || 'YouTube video';
@@ -111,26 +147,62 @@ async function loadReels(){
       frame.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
       frame.allowFullscreen = true;
       player.appendChild(frame);
+
       const info = document.createElement('div');
       info.className = 'reel-info';
+
       const title = document.createElement('div');
       title.className = 'reel-title';
       title.textContent = video.title || 'YouTube Reel';
+
       const channel = document.createElement('div');
       channel.className = 'reel-channel';
       channel.textContent = video.channel || 'YouTube creator';
+
       info.append(title, channel);
       card.append(player, info);
       grid.appendChild(card);
+      added++;
     });
-    status.textContent = 'Showing ' + data.videos.length + ' videos in ' + category + '.';
+
+    reelsLoadedCount += added;
+    reelsNextPageToken = data.nextPageToken || '';
+
+    if (reelsNextPageToken) {
+      moreButton.style.display = 'inline-block';
+      moreButton.disabled = false;
+      moreButton.textContent = 'Load More 50';
+    } else {
+      moreButton.style.display = 'none';
+    }
+
+    if (!reelsLoadedCount) {
+      status.textContent = 'No videos found. Please try another category.';
+    } else if (reelsNextPageToken) {
+      status.textContent = 'Showing ' + reelsLoadedCount + ' videos in ' + category + '. More videos are available.';
+    } else {
+      status.textContent = 'Showing ' + reelsLoadedCount + ' videos in ' + category + '. No more pages are currently available.';
+    }
   } catch (error) {
     status.textContent = 'Reels load nahi hue: ' + error.message;
+    if (loadMore && reelsNextPageToken) {
+      moreButton.style.display = 'inline-block';
+      moreButton.disabled = false;
+      moreButton.textContent = 'Try Load More Again';
+    }
+  } finally {
+    reelsLoading = false;
+    if (moreButton.style.display !== 'none' && moreButton.disabled) {
+      moreButton.disabled = false;
+      moreButton.textContent = 'Load More 50';
+    }
   }
 }
-document.getElementById('loadReels').addEventListener('click', loadReels);
-document.getElementById('reelCategory').addEventListener('change', loadReels);
-window.addEventListener('load', loadReels);
+
+document.getElementById('loadReels').addEventListener('click', () => loadReels(false));
+document.getElementById('loadMoreReels').addEventListener('click', () => loadReels(true));
+document.getElementById('reelCategory').addEventListener('change', () => loadReels(false));
+window.addEventListener('load', () => loadReels(false));
 
 function showToast(s){let t=document.getElementById('toast');t.textContent=s;t.style.display='block';setTimeout(()=>t.style.display='none',2300)}
 function openModal(){document.getElementById('modal').classList.add('show');document.getElementById('caption').focus()}
