@@ -83,11 +83,36 @@ main{min-width:0}.stories,.composer,.post,.sidecard{background:var(--panel);bord
   </div>
   <p class="reels-status" id="reelsStatus" role="status">Loading trending reels…</p><div class="reels-grid" id="reelsGrid"></div>
 </section>
+<section class="videos-section" id="videos">
+  <div class="videos-head">
+    <h2>▶ PRAFUL AUTO VIDEOS</h2>
+    <span class="tag">1 Minute – 8 Hours</span>
+  </div>
+  <div class="videos-controls">
+    <select id="videoCategory" aria-label="Choose videos category">
+      <option value="trending">Trending</option>
+      <option value="comedy">Comedy</option>
+      <option value="funny">Funny</option>
+      <option value="music">Music</option>
+      <option value="gaming">Gaming</option>
+      <option value="sports">Sports</option>
+      <option value="movies">Movies</option>
+      <option value="travel">Travel</option>
+      <option value="technology">Technology</option>
+      <option value="Hindi">Hindi</option>
+      <option value="Gujarati">Gujarati</option>
+    </select>
+    <button type="button" id="loadVideos">Load Videos</button>
+    <button type="button" id="loadMoreVideos" style="display:none">Load More 50</button>
+  </div>
+  <p class="videos-status" id="videosStatus" role="status">Loading videos…</p>
+  <div class="videos-grid" id="videosGrid"></div>
+</section>
 <div id="feed">
 <article class="post"><div class="posthead"><div class="mini">P</div><div><div class="username">praful_creator</div><div class="sub">Suggested post · Just now</div></div></div><div class="postvisual">🌅</div><div class="postbuttons"><button class="iconbtn" onclick="like(this)">♡</button><button class="iconbtn" onclick="showToast('Comments are ready for the next version')">▢</button><button class="iconbtn" onclick="showToast('Share feature coming soon')">➤</button></div><div class="postbody"><b class="likes">12 likes</b><p class="caption"><b>praful_creator</b> Welcome to PRAFUL SOCIAL! Share your moments with everyone. ✨</p><div class="sub">Be the first to comment</div><div class="commentbox"><input placeholder="Add a comment..." onkeydown="if(event.key==='Enter'){showToast('Comment saved in this demo');this.value=''}"><button class="pill" onclick="showToast('Comment feature coming soon')">Send</button></div></div></article>
 </div>
 </main><aside class="side"><section class="sidecard"><h3>Welcome to PRAFUL SOCIAL 👋</h3><p>Your own social space to share photos, videos and moments.</p><span class="tag">Photos</span><span class="tag">Reels</span><span class="tag">Friends</span><hr style="border-color:var(--line);margin:17px 0"><b>Coming next</b><p>Real accounts are connected to Supabase. Posts, likes, follows and chat still need their database features added.</p></section></aside></div>
-<nav class="bottom"><button class="navbtn" onclick="showToast('Home')">⌂</button><button class="navbtn" onclick="showToast('Explore coming soon')">⌕</button><button class="navbtn" onclick="openModal()">＋</button><button class="navbtn" onclick="document.getElementById('reels').scrollIntoView({behavior:'smooth'})">▣</button><button class="navbtn" onclick="openProfile()">☺</button></nav>
+<nav class="bottom"><button class="navbtn" onclick="showToast('Home')">⌂</button><button class="navbtn" onclick="showToast('Explore coming soon')">⌕</button><button class="navbtn" onclick="openModal()">＋</button><button class="navbtn" onclick="document.getElementById('reels').scrollIntoView({behavior:'smooth'})">▣</button><button class="navbtn" onclick="document.getElementById('videos').scrollIntoView({behavior:'smooth'})">▶</button><button class="navbtn" onclick="openProfile()">☺</button></nav>
 
 <div class="modal" id="authModal" onclick="if(event.target===this)closeAuthModal()"><div class="dialog">
 <h2 id="authTitle">Login to PRAFUL SOCIAL</h2>
@@ -274,6 +299,135 @@ document.getElementById('loadReels').addEventListener('click',()=>loadReels(fals
 document.getElementById('loadMoreReels').addEventListener('click',()=>loadReels(true));
 document.getElementById('reelCategory').addEventListener('change',()=>loadReels(false));
 window.addEventListener('load',()=>loadReels(false));
+
+
+const VIDEOS_API = 'https://praful-social-api.bambhaniyapraful7.workers.dev/videos';
+let videosNextPageToken = '';
+let videosLoadedCount = 0;
+let videosLoading = false;
+let videosSeenIds = new Set();
+
+function formatVideoDuration(seconds) {
+  const total = Math.max(0, Number(seconds) || 0);
+  const h = Math.floor(total / 3600);
+  const m = Math.floor((total % 3600) / 60);
+  const s = total % 60;
+  if (h) return h + ':' + String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
+  return m + ':' + String(s).padStart(2, '0');
+}
+
+async function loadVideos(loadMore = false) {
+  if (videosLoading) return;
+
+  const category = document.getElementById('videoCategory').value;
+  const status = document.getElementById('videosStatus');
+  const grid = document.getElementById('videosGrid');
+  const moreButton = document.getElementById('loadMoreVideos');
+
+  if (loadMore && !videosNextPageToken) return;
+
+  if (!loadMore) {
+    videosNextPageToken = '';
+    videosLoadedCount = 0;
+    videosSeenIds = new Set();
+    grid.replaceChildren();
+    moreButton.style.display = 'none';
+  }
+
+  videosLoading = true;
+  const pageToken = loadMore ? videosNextPageToken : '';
+  status.textContent = loadMore ? 'Loading more ' + category + ' videos…' : 'Loading ' + category + ' videos…';
+  moreButton.disabled = true;
+  moreButton.textContent = 'Loading…';
+
+  try {
+    let apiUrl = VIDEOS_API + '?category=' + encodeURIComponent(category);
+    if (pageToken) apiUrl += '&pageToken=' + encodeURIComponent(pageToken);
+
+    const response = await fetch(apiUrl);
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.details || data.error || 'Could not load videos');
+
+    const videos = Array.isArray(data.videos) ? data.videos : [];
+    let added = 0;
+
+    videos.forEach(video => {
+      if (!video || !video.id || videosSeenIds.has(video.id)) return;
+      videosSeenIds.add(video.id);
+
+      const card = document.createElement('article');
+      card.className = 'video-card';
+
+      const player = document.createElement('div');
+      player.className = 'video-player';
+
+      const frame = document.createElement('iframe');
+      frame.src = 'https://www.youtube-nocookie.com/embed/' + encodeURIComponent(video.id);
+      frame.title = video.title || 'YouTube video';
+      frame.loading = 'lazy';
+      frame.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
+      frame.allowFullscreen = true;
+      player.appendChild(frame);
+
+      const info = document.createElement('div');
+      info.className = 'video-info';
+
+      const title = document.createElement('div');
+      title.className = 'video-title';
+      title.textContent = video.title || 'YouTube video';
+
+      const channel = document.createElement('div');
+      channel.className = 'video-channel';
+      channel.textContent = video.channel || 'YouTube creator';
+
+      const duration = document.createElement('div');
+      duration.className = 'video-duration';
+      duration.textContent = 'Duration: ' + formatVideoDuration(video.durationSeconds);
+
+      info.append(title, channel, duration);
+      card.append(player, info);
+      grid.appendChild(card);
+      added++;
+    });
+
+    videosLoadedCount += added;
+    videosNextPageToken = data.nextPageToken || '';
+
+    if (videosNextPageToken) {
+      moreButton.style.display = 'inline-block';
+      moreButton.disabled = false;
+      moreButton.textContent = 'Load More 50';
+    } else {
+      moreButton.style.display = 'none';
+    }
+
+    if (!videosLoadedCount) {
+      status.textContent = 'No videos found. Please try another category.';
+    } else if (videosNextPageToken) {
+      status.textContent = 'Showing ' + videosLoadedCount + ' videos in ' + category + '. More videos are available.';
+    } else {
+      status.textContent = 'Showing ' + videosLoadedCount + ' videos in ' + category + '. No more pages are currently available.';
+    }
+  } catch (error) {
+    status.textContent = 'Videos load nahi hue: ' + (error.message || 'Please try again.');
+    if (loadMore && videosNextPageToken) {
+      moreButton.style.display = 'inline-block';
+      moreButton.disabled = false;
+      moreButton.textContent = 'Try Load More Again';
+    }
+  } finally {
+    videosLoading = false;
+    if (moreButton.style.display !== 'none' && moreButton.disabled) {
+      moreButton.disabled = false;
+      moreButton.textContent = 'Load More 50';
+    }
+  }
+}
+
+document.getElementById('loadVideos').addEventListener('click', () => loadVideos(false));
+document.getElementById('loadMoreVideos').addEventListener('click', () => loadVideos(true));
+document.getElementById('videoCategory').addEventListener('change', () => loadVideos(false));
+window.addEventListener('load', () => loadVideos(false));
 
 function showToast(s){let t=document.getElementById('toast');t.textContent=s;t.style.display='block';setTimeout(()=>t.style.display='none',2300)}
 function openModal(){document.getElementById('modal').classList.add('show');document.getElementById('caption').focus()}
