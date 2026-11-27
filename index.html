@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="hi">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -17,6 +17,9 @@ h1{font-size:clamp(25px,4vw,36px);margin:0 0 5px}.intro{color:var(--muted);margi
 .search input{flex:1;min-width:0;background:#0b1324;border:1px solid var(--line);border-radius:11px;padding:13px;color:white;font-size:16px;outline:none}
 button{border:0;border-radius:11px;padding:11px 17px;background:var(--accent);color:white;font-weight:750;cursor:pointer}
 button:disabled{opacity:.55;cursor:wait}
+.categories{display:flex;gap:9px;overflow-x:auto;padding:15px 1px 5px;scrollbar-width:thin}
+.category{white-space:nowrap;background:#172238;border:1px solid var(--line);color:#e8eaff;padding:9px 14px;border-radius:999px}
+.category:hover,.category.active{background:var(--accent);border-color:var(--accent);color:white}
 .hint{color:var(--muted);font-size:13px;margin:10px 2px 20px}
 .status{color:var(--muted);min-height:24px;margin:14px 2px}
 .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px}
@@ -36,6 +39,20 @@ button:disabled{opacity:.55;cursor:wait}
 <input id="searchInput" type="search" placeholder="Search anything... e.g. Gujarati comedy, songs, cricket" autocomplete="off" required>
 <button id="searchButton" type="submit">Search</button>
 </form>
+
+<nav class="categories" id="categories" aria-label="Video categories">
+<button class="category active" type="button" data-query="trending">🔥 Trending</button>
+<button class="category" type="button" data-query="Gujarati">ગુજરાતી</button>
+<button class="category" type="button" data-query="Hindi">हिंदी</button>
+<button class="category" type="button" data-query="comedy">😂 Comedy</button>
+<button class="category" type="button" data-query="music">🎵 Music</button>
+<button class="category" type="button" data-query="gaming">🎮 Gaming</button>
+<button class="category" type="button" data-query="cricket">🏏 Cricket</button>
+<button class="category" type="button" data-query="movies">🎬 Movies</button>
+<button class="category" type="button" data-query="travel">✈️ Travel</button>
+<button class="category" type="button" data-query="technology">📱 Technology</button>
+</nav>
+
 <p class="hint">1 minute se 8 ghante tak ke videos • Search results YouTube se</p>
 <div class="status" id="status" role="status">Trending videos load ho rahe hain...</div>
 <section class="grid" id="videoGrid"></section>
@@ -49,11 +66,17 @@ const statusBox = document.getElementById('status');
 const grid = document.getElementById('videoGrid');
 const searchButton = document.getElementById('searchButton');
 const moreButton = document.getElementById('loadMore');
+const categoryButtons = [...document.querySelectorAll('.category')];
 let currentQuery = 'trending';
 let nextPageToken = '';
 let loading = false;
 let seen = new Set();
 
+function setActiveCategory(query) {
+  categoryButtons.forEach(button => {
+    button.classList.toggle('active', button.dataset.query.toLowerCase() === query.toLowerCase());
+  });
+}
 function durationText(seconds) {
   const n = Math.max(0, Number(seconds) || 0);
   const h = Math.floor(n / 3600);
@@ -99,11 +122,14 @@ async function searchVideos(query, loadMore=false) {
     seen = new Set();
     grid.replaceChildren();
     moreButton.hidden = true;
+    setActiveCategory(currentQuery);
+    if (input.value.trim() !== currentQuery) input.value = currentQuery === 'trending' ? '' : currentQuery;
   }
   if (loadMore && !nextPageToken) return;
   loading = true;
   searchButton.disabled = true;
   moreButton.disabled = true;
+  categoryButtons.forEach(button => button.disabled = true);
   statusBox.textContent = loadMore ? 'Aur videos load ho rahe hain...' : `“${currentQuery}” search ho raha hai...`;
   try {
     let url = API + '?category=' + encodeURIComponent(currentQuery);
@@ -123,11 +149,15 @@ async function searchVideos(query, loadMore=false) {
     loading = false;
     searchButton.disabled = false;
     moreButton.disabled = false;
+    categoryButtons.forEach(button => button.disabled = false);
   }
 }
 form.addEventListener('submit', e => {
   e.preventDefault();
   searchVideos(input.value);
+});
+categoryButtons.forEach(button => {
+  button.addEventListener('click', () => searchVideos(button.dataset.query));
 });
 moreButton.addEventListener('click', () => searchVideos(currentQuery, true));
 searchVideos('trending');
