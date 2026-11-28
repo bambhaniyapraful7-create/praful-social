@@ -2,14 +2,14 @@
 <html lang="hi">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#101827">
 <meta name="description" content="PRAFUL YouTube Search - search and watch YouTube videos.">
 <title>PRAFUL YOUTUBE</title>
 <style>
 :root{color-scheme:dark;--bg:#0b1020;--panel:#151e30;--line:#2a3650;--muted:#aab5ca;--accent:#765cff}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:#f7f8fc;font:15px/1.5 system-ui,Arial,sans-serif}
-header{position:sticky;top:0;z-index:5;background:#0b1020ee;border-bottom:1px solid var(--line);padding:15px max(16px,calc((100vw - 1100px)/2));display:flex;align-items:center;justify-content:space-between;gap:12px}
+header{position:sticky;top:0;z-index:5;background:#0b1020ee;border-bottom:1px solid var(--line);padding:15px max(16px,calc((100vw - 1100px)/2));display:flex;align-items:center;justify-content:space-between;gap:12px;backdrop-filter:blur(12px)}
 .brand{font-weight:900;font-size:22px;letter-spacing:-.5px}.brand span{color:#9b8aff}
 main{max-width:1100px;margin:28px auto;padding:0 16px}
 h1{font-size:clamp(25px,4vw,36px);margin:0 0 5px}.intro{color:var(--muted);margin:0 0 20px}
@@ -24,16 +24,25 @@ button:disabled{opacity:.55;cursor:wait}
 .status{color:var(--muted);min-height:24px;margin:14px 2px}
 .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px}
 .card{background:var(--panel);border:1px solid var(--line);border-radius:15px;overflow:hidden;min-width:0}
-.player{aspect-ratio:16/9;background:#05070d}.player iframe{width:100%;height:100%;border:0}
+.player{position:relative;aspect-ratio:16/9;background:#05070d;overflow:hidden}
+.player iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.thumb-button{display:block;position:relative;width:100%;height:100%;padding:0;border:0;border-radius:0;background:#05070d;overflow:hidden}
+.thumb-button img{display:block;width:100%;height:100%;object-fit:cover}
+.play-icon{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:64px;height:46px;border-radius:14px;background:#e62117;display:grid;place-items:center;color:white;font-size:25px;box-shadow:0 4px 20px #0008}
+.thumb-label{position:absolute;left:10px;bottom:9px;background:#000b;color:#fff;border-radius:7px;padding:4px 8px;font-size:12px}
+.player:fullscreen{width:100vw;height:100vh;aspect-ratio:auto;background:#000}
+.player:fullscreen iframe{width:100%;height:100%}
 .info{padding:12px}.title{font-weight:750;line-height:1.4}.channel,.duration{font-size:13px;color:var(--muted);margin-top:6px}
 .more-wrap{text-align:center;padding:24px 0 100px}
 .theme-toggle{background:#26334d;border:1px solid var(--line);padding:9px 13px}
-body.light{color-scheme:light;--bg:#f3f5fb;--panel:#ffffff;--line:#d8deeb;--muted:#5f6b80;color:#172033}
+.data-toggle{background:#26334d;border:1px solid var(--line);padding:9px 13px}
+.toolbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:12px}
+body.light{color-scheme:light;--bg:#f3f5fb;--panel:#fff;--line:#d8deeb;--muted:#5f6b80;color:#172033}
 body.light header{background:#ffffffed}
 body.light .search input{background:#f6f8fc;color:#172033}
 body.light .category{background:#e9edf7;color:#26334d}
 body.light .category.active,body.light .category:hover{background:var(--accent);color:white}
-body.light .theme-toggle{background:#e9edf7;color:#26334d}
+body.light .theme-toggle,body.light .data-toggle{background:#e9edf7;color:#26334d}
 .bottom-nav{position:fixed;z-index:10;bottom:0;left:0;right:0;display:flex;justify-content:space-around;gap:4px;padding:9px 8px calc(9px + env(safe-area-inset-bottom));background:#101827f5;border-top:1px solid var(--line);backdrop-filter:blur(12px)}
 .bottom-nav button{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:7px 4px;background:transparent;color:#cbd4e7;font-size:12px}
 .bottom-nav button.active{color:#b7aaff;background:#28304a;border-radius:12px}
@@ -44,12 +53,12 @@ body.light .bottom-nav button.active{color:#5b43d6;background:#eeeaff}
 .profile-panel.show{display:block}
 .profile-avatar{width:72px;height:72px;margin:0 auto 12px;border-radius:50%;display:grid;place-items:center;background:var(--accent);font-size:30px;font-weight:900}
 @media(max-width:520px){header{padding:12px 15px}.brand{font-size:19px}main{margin:20px auto;padding-bottom:80px}.search{padding:9px}.search button{padding:10px 13px}.grid{grid-template-columns:1fr}}
-@media(max-width:520px){header{padding:12px 15px}.brand{font-size:19px}main{margin:20px auto}.search{padding:9px}.search button{padding:10px 13px}.grid{grid-template-columns:1fr}}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
 </style>
-  <link rel="manifest" href="./manifest.json">
+<link rel="manifest" href="./manifest.json">
 </head>
 <body>
-<header><div class="brand">▶ PRAFUL <span>YOUTUBE</span></div><button id="themeToggle" class="theme-toggle" type="button" aria-label="Toggle light and dark mode">☀️ Light</button></header>
+<header><div class="brand">▶ PRAFUL <span>YOUTUBE</span></div><div class="toolbar"><button id="dataToggle" class="data-toggle" type="button">📶 Data Saver: ON</button><button id="themeToggle" class="theme-toggle" type="button">☀️ Light</button></div></header>
 <main>
 <h1>YouTube Video Search</h1>
 <p class="intro">YouTube par jo bhi search karna ho, yahan likhiye.</p>
@@ -57,7 +66,6 @@ body.light .bottom-nav button.active{color:#5b43d6;background:#eeeaff}
 <input id="searchInput" type="search" placeholder="Search anything... e.g. Gujarati comedy, songs, cricket" autocomplete="off" required>
 <button id="searchButton" type="submit">Search</button>
 </form>
-
 <nav class="categories" id="categories" aria-label="Video categories">
 <button class="category active" type="button" data-query="trending">🔥 Trending</button>
 <button class="category" type="button" data-query="Gujarati">ગુજરાતી</button>
@@ -70,186 +78,101 @@ body.light .bottom-nav button.active{color:#5b43d6;background:#eeeaff}
 <button class="category" type="button" data-query="travel">✈️ Travel</button>
 <button class="category" type="button" data-query="technology">📱 Technology</button>
 </nav>
-
-<p class="hint">1 minute se 8 ghante tak ke videos • Search results YouTube se</p>
+<p class="hint">1 minute se 8 ghante tak ke videos • Data Saver mein pehle sirf chhota thumbnail load hota hai; video tap karne par chalega.</p>
 <div class="status" id="status" role="status">Trending videos load ho rahe hain...</div>
 <section class="profile-panel" id="profilePanel">
-  <div class="profile-avatar">P</div>
-  <h2 style="margin:0 0 5px">PRAFUL YOUTUBE</h2>
-  <p class="intro" style="margin:0">Welcome! Search and watch YouTube videos here.</p>
-  <p class="hint">Guest mode • No account or sign-in required</p>
-  <button type="button" id="backToVideos">Back to Videos</button>
+<div class="profile-avatar">P</div><h2 style="margin:0 0 5px">PRAFUL YOUTUBE</h2>
+<p class="intro" style="margin:0">Welcome! Search and watch YouTube videos here.</p>
+<p class="hint">Guest mode • No account or sign-in required</p><button type="button" id="backToVideos">Back to Videos</button>
 </section>
 <section class="grid" id="videoGrid"></section>
 <div class="more-wrap"><button id="loadMore" type="button" hidden>Load More Videos</button></div>
 </main>
 <nav class="bottom-nav" aria-label="Main navigation">
-  <button type="button" class="active" data-nav="home"><span>⌂</span><span>Home</span></button>
-  <button type="button" data-nav="search"><span>⌕</span><span>Search</span></button>
-  <button type="button" data-nav="categories"><span>▦</span><span>Categories</span></button>
-  <button type="button" data-nav="profile"><span>●</span><span>Profile</span></button>
+<button type="button" class="active" data-nav="home"><span>⌂</span><span>Home</span></button>
+<button type="button" data-nav="search"><span>⌕</span><span>Search</span></button>
+<button type="button" data-nav="categories"><span>▦</span><span>Categories</span></button>
+<button type="button" data-nav="profile"><span>●</span><span>Profile</span></button>
 </nav>
 <script>
-const API = 'https://praful-social-api.bambhaniyapraful7.workers.dev/videos';
-const form = document.getElementById('searchForm');
-const input = document.getElementById('searchInput');
-const statusBox = document.getElementById('status');
-const grid = document.getElementById('videoGrid');
-const searchButton = document.getElementById('searchButton');
-const moreButton = document.getElementById('loadMore');
-const categoryButtons = [...document.querySelectorAll('.category')];
-const themeToggle = document.getElementById('themeToggle');
-const profilePanel = document.getElementById('profilePanel');
-const backToVideos = document.getElementById('backToVideos');
-const navButtons = [...document.querySelectorAll('.bottom-nav button')];
+const API='https://praful-social-api.bambhaniyapraful7.workers.dev/videos';
+const $=id=>document.getElementById(id);
+const form=$('searchForm'),input=$('searchInput'),statusBox=$('status'),grid=$('videoGrid');
+const searchButton=$('searchButton'),moreButton=$('loadMore');
+const categoryButtons=[...document.querySelectorAll('.category')];
+const themeToggle=$('themeToggle'),dataToggle=$('dataToggle');
+const profilePanel=$('profilePanel'),backToVideos=$('backToVideos');
+const navButtons=[...document.querySelectorAll('.bottom-nav button')];
+let dataSaver=true,currentQuery='trending',nextPageToken='',loading=false,seen=new Set(),requestNumber=0;
 
-themeToggle.addEventListener('click', () => {
-  const light = document.body.classList.toggle('light');
-  themeToggle.textContent = light ? '🌙 Dark' : '☀️ Light';
-});
-function setNavActive(name) {
-  navButtons.forEach(button => button.classList.toggle('active', button.dataset.nav === name));
+themeToggle.addEventListener('click',()=>{const light=document.body.classList.toggle('light');themeToggle.textContent=light?'🌙 Dark':'☀️ Light';});
+dataToggle.addEventListener('click',()=>{dataSaver=!dataSaver;dataToggle.textContent=dataSaver?'📶 Data Saver: ON':'📶 Data Saver: OFF';statusBox.textContent=dataSaver?'Data Saver ON: video tap karne par hi load hoga.':'Data Saver OFF: thumbnail standard quality mein load honge.';});
+function setNavActive(name){navButtons.forEach(b=>b.classList.toggle('active',b.dataset.nav===name));}
+function showVideos(){profilePanel.classList.remove('show');grid.style.display='grid';$('status').style.display='';document.querySelector('.more-wrap').style.display='';}
+navButtons.forEach(button=>button.addEventListener('click',()=>{
+const page=button.dataset.nav;setNavActive(page);
+if(page==='home'){showVideos();searchVideos('trending');window.scrollTo({top:0,behavior:'smooth'});}
+else if(page==='search'){showVideos();input.focus();input.scrollIntoView({behavior:'smooth',block:'center'});}
+else if(page==='categories'){showVideos();$('categories').scrollIntoView({behavior:'smooth',block:'center'});}
+else{profilePanel.classList.add('show');grid.style.display='none';$('status').style.display='none';document.querySelector('.more-wrap').style.display='none';profilePanel.scrollIntoView({behavior:'smooth',block:'center'});}
+}));
+backToVideos.addEventListener('click',()=>{showVideos();setNavActive('home');window.scrollTo({top:0,behavior:'smooth'});});
+function setActiveCategory(query){categoryButtons.forEach(b=>b.classList.toggle('active',b.dataset.query.toLowerCase()===query.toLowerCase()));}
+function durationText(seconds){const n=Math.max(0,Number(seconds)||0),h=Math.floor(n/3600),m=Math.floor(n%3600/60),s=n%60;return h?`${h}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`:`${m}:${String(s).padStart(2,'0')}`;}
+function makePlayer(video,player,button){
+const frame=document.createElement('iframe');
+const params=new URLSearchParams({autoplay:'1',playsinline:'1',rel:'0',modestbranding:'1'});
+frame.src='https://www.youtube-nocookie.com/embed/'+encodeURIComponent(video.id)+'?'+params.toString();
+frame.title=video.title||'YouTube video';frame.loading='eager';
+frame.allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
+frame.allowFullscreen=true;frame.referrerPolicy='strict-origin-when-cross-origin';
+player.replaceChildren(frame);
 }
-function showVideos() {
-  profilePanel.classList.remove('show');
-  grid.style.display = 'grid';
-  document.getElementById('status').style.display = '';
-  document.querySelector('.more-wrap').style.display = '';
+function addVideo(video){
+if(!video||!video.id||seen.has(video.id))return false;seen.add(video.id);
+const card=document.createElement('article');card.className='card';
+const player=document.createElement('div');player.className='player';
+const thumb=document.createElement('button');thumb.type='button';thumb.className='thumb-button';
+thumb.setAttribute('aria-label','Play '+(video.title||'YouTube video'));
+const img=document.createElement('img');
+img.src='https://i.ytimg.com/vi/'+encodeURIComponent(video.id)+'/mqdefault.jpg';
+img.alt=video.title||'Video thumbnail';img.loading='lazy';img.decoding='async';
+img.onerror=()=>{img.src='https://i.ytimg.com/vi/'+encodeURIComponent(video.id)+'/hqdefault.jpg';};
+const play=document.createElement('span');play.className='play-icon';play.textContent='▶';
+const label=document.createElement('span');label.className='thumb-label';label.textContent='Tap to play';
+thumb.append(img,play,label);thumb.addEventListener('click',()=>makePlayer(video,player,thumb),{once:true});
+player.appendChild(thumb);
+const info=document.createElement('div');info.className='info';
+const title=document.createElement('div');title.className='title';title.textContent=video.title||'YouTube video';
+const channel=document.createElement('div');channel.className='channel';channel.textContent=video.channel||'YouTube creator';
+const duration=document.createElement('div');duration.className='duration';duration.textContent='Duration: '+durationText(video.durationSeconds);
+info.append(title,channel,duration);card.append(player,info);grid.appendChild(card);return true;
 }
-navButtons.forEach(button => {
-  button.addEventListener('click', () => {
-    const page = button.dataset.nav;
-    setNavActive(page);
-    if (page === 'home') {
-      showVideos();
-      searchVideos('trending');
-      window.scrollTo({top: 0, behavior: 'smooth'});
-    } else if (page === 'search') {
-      showVideos();
-      input.focus();
-      input.scrollIntoView({behavior: 'smooth', block: 'center'});
-    } else if (page === 'categories') {
-      showVideos();
-      document.getElementById('categories').scrollIntoView({behavior: 'smooth', block: 'center'});
-    } else if (page === 'profile') {
-      profilePanel.classList.add('show');
-      grid.style.display = 'none';
-      document.getElementById('status').style.display = 'none';
-      document.querySelector('.more-wrap').style.display = 'none';
-      profilePanel.scrollIntoView({behavior: 'smooth', block: 'center'});
-    }
-  });
-});
-backToVideos.addEventListener('click', () => {
-  showVideos();
-  setNavActive('home');
-  window.scrollTo({top: 0, behavior: 'smooth'});
-});
-let currentQuery = 'trending';
-let nextPageToken = '';
-let loading = false;
-let seen = new Set();
-
-function setActiveCategory(query) {
-  categoryButtons.forEach(button => {
-    button.classList.toggle('active', button.dataset.query.toLowerCase() === query.toLowerCase());
-  });
+async function searchVideos(query,loadMore=false){
+if(loading)return;
+if(!loadMore){showVideos();currentQuery=query.trim()||'trending';nextPageToken='';seen=new Set();grid.replaceChildren();moreButton.hidden=true;setActiveCategory(currentQuery);if(input.value.trim()!==currentQuery)input.value=currentQuery==='trending'?'':currentQuery;}
+if(loadMore&&!nextPageToken)return;
+loading=true;const thisRequest=++requestNumber;
+searchButton.disabled=true;moreButton.disabled=true;categoryButtons.forEach(b=>b.disabled=true);
+statusBox.textContent=loadMore?'Aur videos load ho rahe hain...':`“${currentQuery}” search ho raha hai...`;
+try{
+let url=API+'?category='+encodeURIComponent(currentQuery);if(loadMore&&nextPageToken)url+='&pageToken='+encodeURIComponent(nextPageToken);
+const response=await fetch(url);const data=await response.json();
+if(!response.ok)throw new Error(data.details||data.error||'YouTube search failed');
+if(thisRequest!==requestNumber)return;
+const videos=Array.isArray(data.videos)?data.videos:[];let added=0;videos.forEach(v=>{if(addVideo(v))added++;});
+nextPageToken=data.nextPageToken||'';statusBox.textContent=added?`${added} videos mil gaye. Search: ${currentQuery}`:'Is search ke liye videos nahi mile. Dusra word search karein.';
+moreButton.hidden=!nextPageToken;
+}catch(err){if(thisRequest===requestNumber)statusBox.textContent='Error: '+(err.message||'Videos load nahi hue. Internet/API check karein.');}
+finally{if(thisRequest===requestNumber){loading=false;searchButton.disabled=false;moreButton.disabled=false;categoryButtons.forEach(b=>b.disabled=false);}}
 }
-function durationText(seconds) {
-  const n = Math.max(0, Number(seconds) || 0);
-  const h = Math.floor(n / 3600);
-  const m = Math.floor((n % 3600) / 60);
-  const s = n % 60;
-  return h ? `${h}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}` : `${m}:${String(s).padStart(2,'0')}`;
-}
-function addVideo(video) {
-  if (!video || !video.id || seen.has(video.id)) return false;
-  seen.add(video.id);
-  const card = document.createElement('article');
-  card.className = 'card';
-  const player = document.createElement('div');
-  player.className = 'player';
-  const frame = document.createElement('iframe');
-  frame.src = 'https://www.youtube-nocookie.com/embed/' + encodeURIComponent(video.id);
-  frame.title = video.title || 'YouTube video';
-  frame.loading = 'lazy';
-  frame.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
-  frame.allowFullscreen = true;
-  player.appendChild(frame);
-  const info = document.createElement('div');
-  info.className = 'info';
-  const title = document.createElement('div');
-  title.className = 'title';
-  title.textContent = video.title || 'YouTube video';
-  const channel = document.createElement('div');
-  channel.className = 'channel';
-  channel.textContent = video.channel || 'YouTube creator';
-  const duration = document.createElement('div');
-  duration.className = 'duration';
-  duration.textContent = 'Duration: ' + durationText(video.durationSeconds);
-  info.append(title, channel, duration);
-  card.append(player, info);
-  grid.appendChild(card);
-  return true;
-}
-async function searchVideos(query, loadMore=false) {
-  if (loading) return;
-  if (!loadMore) {
-    showVideos();
-    currentQuery = query.trim() || 'trending';
-    nextPageToken = '';
-    seen = new Set();
-    grid.replaceChildren();
-    moreButton.hidden = true;
-    setActiveCategory(currentQuery);
-    if (input.value.trim() !== currentQuery) input.value = currentQuery === 'trending' ? '' : currentQuery;
-  }
-  if (loadMore && !nextPageToken) return;
-  loading = true;
-  searchButton.disabled = true;
-  moreButton.disabled = true;
-  categoryButtons.forEach(button => button.disabled = true);
-  statusBox.textContent = loadMore ? 'Aur videos load ho rahe hain...' : `“${currentQuery}” search ho raha hai...`;
-  try {
-    let url = API + '?category=' + encodeURIComponent(currentQuery);
-    if (loadMore && nextPageToken) url += '&pageToken=' + encodeURIComponent(nextPageToken);
-    const response = await fetch(url);
-    const data = await response.json();
-    if (!response.ok) throw new Error(data.details || data.error || 'YouTube search failed');
-    const videos = Array.isArray(data.videos) ? data.videos : [];
-    let added = 0;
-    videos.forEach(v => { if (addVideo(v)) added++; });
-    nextPageToken = data.nextPageToken || '';
-    statusBox.textContent = added ? `${added} videos mil gaye. Search: ${currentQuery}` : 'Is search ke liye videos nahi mile. Dusra word search karein.';
-    moreButton.hidden = !nextPageToken;
-  } catch (err) {
-    statusBox.textContent = 'Error: ' + (err.message || 'Videos load nahi hue. Internet/API check karein.');
-  } finally {
-    loading = false;
-    searchButton.disabled = false;
-    moreButton.disabled = false;
-    categoryButtons.forEach(button => button.disabled = false);
-  }
-}
-form.addEventListener('submit', e => {
-  e.preventDefault();
-  searchVideos(input.value);
-});
-categoryButtons.forEach(button => {
-  button.addEventListener('click', () => searchVideos(button.dataset.query));
-});
-moreButton.addEventListener('click', () => searchVideos(currentQuery, true));
+form.addEventListener('submit',e=>{e.preventDefault();searchVideos(input.value);});
+categoryButtons.forEach(b=>b.addEventListener('click',()=>searchVideos(b.dataset.query)));
+moreButton.addEventListener('click',()=>searchVideos(currentQuery,true));
 searchVideos('trending');
 </script>
-  <script>
-if ("serviceWorker" in navigator) {
-  window.addEventListener("load", () => {
-    navigator.serviceWorker.register("./sw.js")
-      .then(() => console.log("Service Worker registered"))
-      .catch(error => console.error("Service Worker error:", error));
-  });
-}
+<script>
+if('serviceWorker'in navigator){window.addEventListener('load',()=>{navigator.serviceWorker.register('./sw.js').catch(error=>console.error('Service Worker error:',error));});}
 </script>
 </body>
 </html>
-
